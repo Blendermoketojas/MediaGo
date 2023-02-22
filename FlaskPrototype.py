@@ -21,5 +21,18 @@ def process_register():
     else:
         return 'Content-Type not supported!'
 
+@app.route('/login', methods=['POST'])
+def process_login():
+    content_type == request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        if json.get('user') and json.get('password'):
+            #Login metodas is mongoDB
+            return
+        else:
+            return 'Bad json keys'
+    else:
+        return 'Content-Type not supported!'
+
 if __name__ == "__main__":
     app.run()
