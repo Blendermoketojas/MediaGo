@@ -21,6 +21,12 @@
             <youtube video-url="https://www.youtube.com/watch?v=jNQXAC9IVRw" allowfullscreen="false" width="460"
               height="260" @ready="onReady" ref="youtube" />
           </div>
+          <img :src="gifsArray.gif1" alt="GIF" class="stickman">
+          <img :src="gifsArray.gif2" alt="GIF" class="stickman">
+          <img :src="gifsArray.gif3" alt="GIF" class="stickman">
+          <img :src="gifsArray.gif4" alt="GIF" class="stickman">
+          <img :src="gifsArray.gif5" alt="GIF" class="stickman">
+          <img :src="gifsArray.gif6" alt="GIF" class="stickman">
         </main>
         <div class="">
           <footer-player></footer-player>
@@ -34,6 +40,19 @@
 </template>
 
 <script>
+import gif1 from "../assets/better gifs/2nd.gif";
+import gif1back from "../assets/better gifs/2ndback.gif";
+import gif2 from "../assets/better gifs/4th.gif";
+import gif2back from "../assets/better gifs/4thback.gif";
+import gif3 from "../assets/better gifs/5th.gif";
+import gif3back from "../assets/better gifs/5thback.gif";
+import gif4 from "../assets/better gifs/6th.gif";
+import gif4back from "../assets/better gifs/6thback.gif";
+import gif5 from "../assets/better gifs/7th.gif";
+import gif5back from "../assets/better gifs/7thback.gif";
+import gif6 from "../assets/better gifs/10.gif";
+import gif6back from "../assets/better gifs/10back.gif";
+
 import BaseHeader from "../components/header/BaseHeader.vue";
 import BaseSidebar from "../components/sidebar/BaseSidebar.vue";
 import BaseChat from "../components/sidebar/BaseChat.vue";
@@ -82,6 +101,20 @@ export default {
   data() {
     return {
       user: null,
+      gifsArray: {
+        gif1: gif1,
+        gif1back: gif1back,
+        gif2: gif2,
+        gif2back: gif2back,
+        gif3: gif3,
+        gif3back: gif3back,
+        gif4: gif4,
+        gif4back: gif4back,
+        gif5: gif5,
+        gif5back: gif5back,
+        gif6: gif6,
+        gif6back: gif6back,
+      },
     }
   },
   computed: {

@@ -47,6 +47,7 @@
 </template>
 
 <script>
+
 import { reactive } from "vue";
 export default {
   data() {
@@ -59,6 +60,7 @@ export default {
         email: "",
         password: "",
       }),
+     
     };
   },
   methods: {
