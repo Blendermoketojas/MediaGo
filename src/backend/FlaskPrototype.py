@@ -180,8 +180,8 @@ def get_server_info(id):
         return jsonify({'success':False, 'message':'id'})
     
 def get_servers(popular, genre, country, offset, limit):
-    if limit > 100:
-        limit = 100
+    if limit > 50:
+        limit = 50
     
     sql = "SELECT * FROM servers WHERE genre = %s AND country = %s ORDER BY users "
     if popular == True:
@@ -212,8 +212,8 @@ def get_servers(popular, genre, country, offset, limit):
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, country, offset, limit):
-    if limit > 100:
-        limit = 100
+    if limit > 50:
+        limit = 50
     
     sql = "SELECT * FROM servers WHERE country = %s ORDER BY users "
     if popular == True:
@@ -244,8 +244,8 @@ def get_servers(popular, country, offset, limit):
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, genre, offset, limit, temp, temp1):
-    if limit > 100:
-        limit = 100
+    if limit > 50:
+        limit = 50
     
     sql = "SELECT * FROM servers WHERE genre = %s ORDER BY users "
     if popular == True:
@@ -276,8 +276,8 @@ def get_servers(popular, genre, offset, limit, temp, temp1):
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, offset, limit):
-    if limit > 100:
-        limit = 100
+    if limit > 50:
+        limit = 50
     
     sql = "SELECT * FROM servers ORDER BY users "
     if popular == True:
