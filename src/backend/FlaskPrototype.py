@@ -163,6 +163,12 @@ def server_edit_owner(id, owner, newOwner):
                     return jsonify({'success':True, 'id':row[3], 'name':row[0], 'description':row[1], 'users':row[2], 'owner':row[4], 'theme':row[5], 'genre':row[7], 'country':row[6]})
             else:
                 return jsonify({'success':False, 'message':'user_id'})
+#########################################################################
+#DROPDOWN VALUES (ROUTES)
+#########################################################################
+
+def get_countries():
+    return
 
 #########################################################################
 #ROOM GET DATA
@@ -397,6 +403,11 @@ def process_s_edit_o():
             return jsonify({'success':False, 'message':'JSON keys not supported!'})
     else:
         return jsonify({'success':False, 'message':'Content type not supported'})
+
+#########################################################################
+#DROPDOWN VALUES (ROUTES)
+#########################################################################
+
 
 #########################################################################
 #ROOM GET DATA (ROUTES)
