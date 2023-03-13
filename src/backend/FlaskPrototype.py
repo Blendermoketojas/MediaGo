@@ -70,7 +70,102 @@ def login(email, password):
         return jsonify({'success':True, 'id':id, 'nickname':nickname})
     else:
         return jsonify({'success':False, 'message':'password'})
+    
+def server_add(name, owner, theme, genre, country):
+    sql = "SELECT EXISTS(SELECT id_servers FROM servers WHERE name = %s)"
+    val = (name,)
+    cursor.execute(sql, val)
+    if(cursor.fetchall()[0][0] != 0):
+        return jsonify({'success':False, 'message':'name'})
 
+    sql = "INSERT INTO servers (name, theme, genre, country, fk_usersid_users) VALUES (%s, %s, %s, %s, %s)"
+    val = (name, theme, genre, country, owner)
+    cursor.execute(sql, val)
+    mydb.commit()
+
+    sql = "SELECT id_servers WHERE name = %s"
+    val = (name,)
+    cursor.execute(sql, val)
+    mydb.commit()
+    id = cursor.fetchall()[0][0]
+
+    return jsonify({'success':True, 'id':id, 'name':name, 'owner':owner, 'theme':theme, 'genre':genre, 'country':country})
+
+
+def server_delete(id, user_id):
+    sql = "SELECT * FROM servers WHERE id_server = %s"
+    val = (id,)
+    cursor.execute(sql, val)
+    result = cursor.fetchall()
+    if (result[0][0] != 0):
+        for row in result:
+            if(user_id == row[5]):
+                sql = "DELETE FROM servers WHERE id_server = %s"
+                val = (id,)
+                cursor.execute(sql, val)
+                mydb.commit()
+                sql = "DELETE FROM servers_users WHERE fk_serversid_servers = %s"
+                val = (id,)
+                cursor.execute(sql, val)
+                mydb.commit()
+                return jsonify({'success':True, 'message':'Server with id: '+id+' , was deleted successfully'})
+            else:
+                return jsonify({'success':False, 'message':'user_id'})
+    else:
+        return jsonify({'success':False, 'message':'id'})
+
+def server_edit_info(id, name, owner, theme, genre, country):
+    sql = "SELECT * FROM servers WHERE id_servers = %s"
+    val = (id,)
+    cursor.execute(sql, val)
+    response = cursor.fetchall()
+    if(response[0][0] == 0):
+        return jsonify({'success':False, 'message':'id'})
+    else:
+        for row in response:
+            if(row[5] == owner):
+                sql = "UPDATE servers SET name = %s, theme = %s, genre = %s, country = %s WHERE id_servers = %s"
+                val = (name, theme, genre, country, id)
+                cursor.execute(sql, val)
+                mydb.commit()
+                return jsonify({'success':True, 'id':id, 'name':name, 'owner':owner, 'theme':theme, 'genre':genre, 'country':country})
+            else:
+                return jsonify({'success':False, 'message':'user_id'})
+            
+def server_edit_owner(id, owner, newOwner):
+    sql = "SELECT * FROM servers WHERE id_servers = %s"
+    val = (id,)
+    cursor.execute(sql, val)
+    respone = cursor.fetchall()
+    if(respone[0][0] == 0):
+        return jsonify({'success':False, 'message':'id'})
+    else:
+        for row in respone:
+            if(row[5] == owner):
+                sql = "UPDATE servers SET fk_usersid_users = %s WHERE id_servers = %s"
+                val = (newOwner, id)
+                cursor.execute(sql, val)
+                mydb.commit()
+
+                sql = "SELECT * FROM servers WHERE id_servers = %s"
+                val = (id,)
+                cursor.execute(sql, val)
+                respone = cursor.fetchall()
+                for row in respone:
+                    return jsonify({'success':True, 'id':row[4], 'name':row[0], 'owner':row[5], 'theme':row[1], 'genre':row[2], 'country':row[3]})
+            else:
+                return jsonify({'success':False, 'message':'user_id'})
+            
+def get_server_info(id):
+    sql = "SELECT * FROM servers WHERE id_servers = %s"
+    val = (id,)
+    cursor.execute(sql, val)
+    response = cursor.fetchall()
+    try:
+        for row in response:
+            return jsonify({'success':True, 'id':row[4], 'name':row[0], 'owner':row[5], 'theme':row[1], 'genre':row[2], 'country':row[3]})
+    except:
+        return jsonify({'success':False, 'message':'id'})
 
 @app.route('/register', methods=['POST'])
 def process_r():
@@ -97,6 +192,62 @@ def process_l():
             return jsonify({'success':False, 'message':'JSON keys not supported!'})
     else:
         return jsonify({'success':False, 'message':'Content type not supported'})
+
+@app.route('/server_add', methods=['POST'])
+def process_s_add():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        if json.get('name') and json.get('owner') and json.get('theme') and json.get('genre') and json.get('country'):
+
+            return server_add(json.get('name'), json.get('owner'), json.get('theme'), json.get('genre'), json.get('country'))
+        else:
+            return jsonify({'success':False, 'message':'JSON keys not supported!'})
+    else:
+        return jsonify({'success':False, 'message':'Content type not supported'})
+    
+
+@app.route('/server_delete', methods=['POST'])
+def process_s_delete():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        if json.get('id') and json.get('user_id'):
+
+            return server_delete(json.get('id'), json.get('user_id'))
+        else:
+            return jsonify({'success':False, 'message':'JSON keys not supported!'})
+    else:
+        return jsonify({'success':False, 'message':'Content type not supported'})
+    
+
+@app.route('/server_edit_info', methods=['POST'])
+def process_s_edit_i():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        if json.get('id') and json.get('name') and json.get('user_id') and json.get('theme') and json.get('genre') and json.get('country'):
+
+            return server_edit_info(json.get('id'), json.get('name'), json.get('user_id'), json.get('theme'), json.get('genre'), json.get('country'))
+        else:
+            return jsonify({'success':False, 'message':'JSON keys not supported!'})
+    else:
+        return jsonify({'success':False, 'message':'Content type not supported'})
+    
+@app.route('/server_edit_owner', methods=['POST'])
+def process_s_edit_o():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        if json.get('id') and json.get('user_id') and json.get('new_owner'):
+
+            return server_edit_owner(json.get('id'), json.get('user_id'), json.get('new_owner'))
+        else:
+            return jsonify({'success':False, 'message':'JSON keys not supported!'})
+    else:
+        return jsonify({'success':False, 'message':'Content type not supported'})
+
+
 
 if __name__ == "__main__":
     app.run()
