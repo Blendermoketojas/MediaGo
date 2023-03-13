@@ -68,9 +68,11 @@ const store = createStore({
       videoTitle: '',
       showPlaylistDialog: false,
       showServersDialog: false,
-      user: { id: '86465161', name: "tadelis123", permissions: 1 },
+      user: { id: '86465161', name: `lopasprisijunk`, permissions: 1 },
       selectedServer: null,
       ws: null,
+      frontendIP: '192.168.239.22',
+      backendIP: '192.168.239.128'
     };
   },
   mutations: {
@@ -123,6 +125,12 @@ const store = createStore({
     },
     getWs(state) {
       return state.ws;
+    },
+    getFrontendIP(state) {
+      return state.frontendIP;
+    },
+    getBackendIP(state) {
+      return state.backendIP;
     }
   }
 });

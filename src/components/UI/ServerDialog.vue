@@ -17,7 +17,7 @@
           <dialog-sidebar :items="navItems" :additionVisible="false"></dialog-sidebar>
           <ul class="w-100">
             <server-item></server-item>
-            <server-item v-for="server in servers" :key="server.id" :id="server.id" :serverTitle="server.name"
+            <server-item @turnOffDialog="toggleDialog" v-for="server in servers" :key="server.id" :id="server.id" :serverTitle="server.name"
               :genre="server.genre" :country="server.country" :theme="server.theme"></server-item>
           </ul>
         </div>

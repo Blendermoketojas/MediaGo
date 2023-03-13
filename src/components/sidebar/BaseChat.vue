@@ -16,14 +16,12 @@
                 </div>
             </div>
         </div>
-        <div class="list-group list-group-flush border-bottom scrollarea sidebar-height">
+        <div ref="chatContainer" class="list-group list-group-flush border-bottom scrollarea sidebar-height overflow-auto">
             <div class="m-4">
                 <ul>
-                    <base-comment name="Tadas" comment="labadiena" time="1:35PM"></base-comment>
-                    <base-comment name="Jevgenij" comment="Sveiki" time="1:36PM"></base-comment>
-                    <base-comment name="Renaldas" comment="heloo" time="1:37PM"></base-comment>
-                    <base-comment name="Lukas L" comment="kas cia per daina" time="1:37PM"></base-comment>
-                    <base-comment name="Lukas T" comment="labas rytas" time="1:38PM"></base-comment>
+                    <span v-if="getServer == null" class="text-white">Connect to a server to start a conversation!</span>
+                    <base-comment v-for="message in messages" :key="Math.random()" :name="message.username"
+                        :comment="message.text" :time="message.time"></base-comment>
                 </ul>
             </div>
         </div>
@@ -39,6 +37,40 @@ export default {
     components: {
         ChatArea,
         BaseComment
+    },
+    data() {
+        return {
+            messages: [],
+        }
+    },
+    methods: {
+        calcCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours()
+            const minutes = now.getMinutes();
+            return `${hours}:${minutes}`;
+        },
+        pushMessage(message) {
+            const currentTime = this.calcCurrentTime();
+            this.messages.push({...message, time: currentTime})
+            this.scrollToBottom();
+        },
+        scrollToBottom() {
+            const container = this.$refs.chatContainer;
+            container.scrollTop = container.scrollHeight;
+        },
+    },
+    computed: {
+        getServer() {
+            return this.$store.getters.getSelectedServer;
+        }
+    },
+    watch: {
+        getServer: {
+            handler(newVal, oldVal) {
+                this.messages = [];
+            }
+        }
     }
 }
 </script>

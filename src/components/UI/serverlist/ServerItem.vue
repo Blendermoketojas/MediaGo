@@ -16,6 +16,7 @@
   
 <script>
 export default {
+    emits: ['turnOffDialog'],
     props: {
         id: {
             type: String,
@@ -51,6 +52,7 @@ export default {
         setSelectedServer() {
             const { id, country, serverTitle, genre, imgUrl } = this;
             this.$store.commit('setSelectedServer', { id, country, serverTitle, genre, imgUrl })
+            this.$emit('turnOffDialog')
         }
     }
 };

@@ -18,8 +18,8 @@
       <div class="d-flex flex-column">
         <main class="retro-background">
           <div class="d-flex justify-content-center mt-3">
-            <youtube video-url="https://www.youtube.com/watch?v=jNQXAC9IVRw" allowfullscreen="false" width="640"
-              height="360" @ready="onReady" ref="youtube" />
+            <youtube video-url="https://www.youtube.com/watch?v=jNQXAC9IVRw" allowfullscreen="false" width="460"
+              height="260" @ready="onReady" ref="youtube" />
           </div>
         </main>
         <div class="">
@@ -60,19 +60,23 @@ export default {
         this.ws.onerror = this.ws.onopen = this.ws.onclose = null;
         this.ws.close();
       }
-      this.$store.commit('setWs', new WebSocket('ws://localhost:6800'));
-      this.ws.onopen = () => { this.ws.send(roomInfo) };
+      this.$store.commit('setWs', new WebSocket('ws://192.168.239.22:6800'));
+      this.ws.onopen = () => { this.ws.send(JSON.stringify(roomInfo)) };
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === 'chat') { console.log("chat") }//showMessage(data.message); // Update chat for client.
+        if (data.type === 'chat') this.addMessage(data.message)//showMessage(data.message); // Update chat for client.
         else if (data.type === 'likeUpdate') {
-          document.getElementById("allLikes").innerHTML = data.update; // Update likes for client.
+          console.log("likes updated")
+          // document.getElementById("allLikes").innerHTML = data.update; // Update likes for client.
           if (data.reset) console.log('reset') // switchLikeButtons(false);
         }
         else if (data.type === 'disconnect' && data.username === username) console.log("disconnect") // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
         else if (data.type === 'queueUpdate') console.log("queueUpdate") // switchLikeButtons(data.isEmpty); // If queue is empty, disable like buttons.
       }
       this.ws.onclose = () => { this.ws = null; }
+    },
+    addMessage(message) {
+      this.$refs.chat.pushMessage(message);
     }
   },
   data() {
@@ -91,7 +95,7 @@ export default {
   watch: {
     watchServer: {
       handler(newVal, oldVal) {
-        this.init({ roomId: newVal.id, type: 'subscribe', username: this.user.name })
+        this.init({ roomId: newVal.id, type: "subscribe", username: this.user.name })
       },
       immediate: false
     }
@@ -122,7 +126,11 @@ main {
 }
 
 .retro-background {
-  background-image: url("../assets/resized.jpeg");
+  background-image: url("../assets/pultas.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  background-size: 100% 100%;
   /* z-index: 0; */
 }
 </style>

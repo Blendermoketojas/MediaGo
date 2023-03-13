@@ -1,45 +1,48 @@
 <template>
-  <div class="container w-25">
+  <div class="vh-100 vw-100 d-flex justify-content-center align-items-center" style="background-color: #121313;">
+    <div class="container_auth" style="width: 33%;">
 
-    <!-- LOGIN FORM -->
-    <form v-if="!showRegisterForm">
+      <!-- LOGIN FORM -->
+      <form @submit.prevent="handleLogin" v-if="!showRegisterForm">
 
-      <!-- Form Title -->
-      <h1 id="form-title">LOGIN</h1>
+        <!-- Form Title -->
+        <h1 id="form-title">LOGIN</h1>
 
-      <!-- Email Input -->
-      <input type="email" v-model="formData.email" placeholder="Enter Email" />
+        <!-- Email Input -->
+        <input type="email" v-model="formData.email" placeholder="Enter Email" />
 
-      <!-- Password Input -->
-      <input type="password" v-model="formData.password" placeholder="Enter password" />
+        <!-- Password Input -->
+        <input type="password" v-model="formData.password" placeholder="Enter password" />
 
-      <!-- Submit Button -->
-      <button type="submit">Login</button>
-      <p>Not a member? <a href="#!" @click="toggleRegisterForm">Register</a></p>
+        <!-- Submit Button -->
+        <button type="submit">Login</button>
+        <span v-if="this.errors" style="color: crimson;">An ERROR occured: {{ this.message }}</span>
+        <p>Not a member? <a href="#!" @click="toggleRegisterForm">Register</a></p>
+      </form>
 
-    </form>
+      <!-- ------------------------------------------------------------------------------------- -->
 
-    <!-- ------------------------------------------------------------------------------------- -->
+      <!-- REGISTER FORM -->
+      <form @submit.prevent="handleRegistration" v-else>
 
-    <!-- REGISTER FORM -->
-    <form v-else>
+        <!-- Form Title -->
+        <h1 id="form-title">REGISTER</h1>
 
-      <!-- Form Title -->
-      <h1 id="form-title">REGISTER</h1>
+        <!-- Username Input -->
+        <input type="text" v-model="formData.nickname" placeholder="Username" />
 
-      <!-- Username Input -->
-      <input type="text" v-model="formData.nickname" placeholder="Username" />
+        <!-- Email Input -->
+        <input type="email" v-model="formData.email" placeholder="Email" />
 
-      <!-- Email Input -->
-      <input type="email" v-model="formData.email" placeholder="Email" />
+        <!-- Password Input -->
+        <input type="password" v-model="formData.password" placeholder="Enter password" />
 
-      <!-- Password Input -->
-      <input type="password" v-model="formData.password" placeholder="Enter password" />
-
-      <!-- Submit Button -->
-      <button type="submit">Register</button>
-      <p>Already have account? <a href="#!" @click="toggleRegisterForm">Login</a></p>
-    </form>
+        <!-- Submit Button -->
+        <button type="submit">Register</button>
+        <span v-if="this.errors" style="color: crimson;">An ERROR occured: {{ this.message }}</span>
+        <p>Already have account? <a href="#!" @click="toggleRegisterForm">Login</a></p>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -49,6 +52,8 @@ export default {
   data() {
     return {
       showRegisterForm: false,
+      errors: false,
+      message: '',
       formData: reactive({
         nickname: "",
         email: "",
@@ -60,13 +65,41 @@ export default {
     handleLogin() {
       this.$http({
         method: "post",
-        url: "BACKEND_URL",
+        url: `http://${this.$store.getters.getBackendIP}:5000/login`,
         data: { ...this.formData },
-      }).then((response) => console.log(response.data));
+      }).then((response) => this.handleUserInitialization(response.data));
     },
     toggleRegisterForm() {
       this.showRegisterForm = !this.showRegisterForm;
     },
+    handleRegistration() {
+      this.$http({
+        method: "post",
+        url: `http://${this.$store.getters.getBackendIP}:5000/register`,
+        data: { ...this.formData },
+      }).then((response) => this.handleUserInitialization(response.data));
+    },
+    handleUserInitialization(data) {
+      if (data.success) {
+        console.log("request success")
+        this.$store.commit('setUser', { id: data.id, name: data.nickname });
+        sessionStorage.setItem('user', { id: data.id, name: data.nickname });
+        this.$router.push({ path: '/floor/waiting_room' })
+      } else {
+        console.log("request not success")
+        this.errors = true;
+        this.message = data.message;
+      }
+    },
+    // handleAuthentication() {
+    //   if(this.showRegisterForm) {
+
+    //   } else {
+    //     this.handleLogin();
+    //   }
+    // },
+    validate() {
+    }
   },
 };
 </script>
@@ -74,10 +107,10 @@ export default {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap");
 
-.container {
+.container_auth {
   font-family: "Tilt Neon", cursive;
   border: solid black 1px;
-  background: #1f1f1e;
+  background-color: #1f1f1e;
   padding: 15px;
 }
 
@@ -97,7 +130,8 @@ p {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
   width: 100%;
   padding: 10px 10px;
   margin: 8px 0;
