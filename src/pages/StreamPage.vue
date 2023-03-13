@@ -4,7 +4,7 @@
     </playlist-dialog>
   </Teleport>
   <Teleport to="body">
-    <server-dialog v-model="this.$store.getters.getShowServersDialog">
+    <server-dialog>
 
     </server-dialog>
   </Teleport>
@@ -60,7 +60,7 @@ export default {
         this.ws.onerror = this.ws.onopen = this.ws.onclose = null;
         this.ws.close();
       }
-      this.$store.commit('setWs', new WebSocket('ws://192.168.239.22:6800'));
+      this.$store.commit('setWs', new WebSocket('ws://localhost:6800'));
       this.ws.onopen = () => { this.ws.send(JSON.stringify(roomInfo)) };
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data);

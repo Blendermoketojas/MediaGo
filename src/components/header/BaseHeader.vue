@@ -15,15 +15,19 @@
       </div>
 
       <div class="d-flex align-items-center">
-        <router-link to="/authentication" class="btn btn-outline-light me-2">Login</router-link>
-        <router-link to="/authentication" class="btn btn-warning">Sign-up</router-link>
+        <base-avatar :username="this.$store.getters.getUser?.name"></base-avatar>
       </div>
     </div>
   </header>
 </template>
 
 <script>
+import BaseAvatar from '../UI/BaseAvatar.vue';
+
 export default {
+  components: {
+    BaseAvatar
+  },
   props: {
     // roomName: {
     //   type: String,
