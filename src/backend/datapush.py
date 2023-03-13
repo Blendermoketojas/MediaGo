@@ -7,8 +7,8 @@ mydb = mysql.connector.connect(
     database = "plugdj"
 )
 
-file1 = "countries.txt"
-file2 = "genres.txt"
+file1 = "C:/Users/IT/git/MediaGo/src/backend/countries.txt"
+file2 = "C:/Users/IT/git/MediaGo/src/backend/genres.txt"
 file3 = "smthng.txt"
 
 cursor = mydb.cursor()
@@ -19,8 +19,9 @@ def main():
             line = f.readline()
 
             if len(line) > 0:
-                sql = "INSERT INTO countries (name) VALUES (%s)"
+                sql = "INSERT INTO country (name) VALUES (%s)"
                 val = (line,)
+                cursor.execute(sql, val)
                 mydb.commit()
             else:
                 break
@@ -32,6 +33,7 @@ def main():
             if len(line) > 0:
                 sql = "INSERT INTO genre (name) VALUES (%s)"
                 val = (line,)
+                cursor.execute(sql, val)
                 mydb.commit()
             else:
                 break
