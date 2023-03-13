@@ -68,7 +68,7 @@ export default {
       this.$http({
         method: "post",
         url: `http://${this.$store.getters.getBackendIP}:5000/login`,
-        data: { ...this.formData },
+        data: { email: this.formData.email, password: this.formData.password },
       }).then((response) => this.handleUserInitialization(response.data));
     },
     toggleRegisterForm() {
@@ -85,12 +85,14 @@ export default {
       if (data.success) {
         console.log("request success")
         this.$store.commit('setUser', { id: data.id, name: data.nickname });
-        sessionStorage.setItem('user', { id: data.id, name: data.nickname });
+        this.$store.commit('setIsAuthenticated', true);
+        sessionStorage.setItem('user', JSON.stringify({ id: data.id, name: data.nickname }));
         this.$router.push({ path: '/floor/waiting_room' })
       } else {
         console.log("request not success")
         this.errors = true;
         this.message = data.message;
+        console.log(this.formData)
       }
     },
     // handleAuthentication() {

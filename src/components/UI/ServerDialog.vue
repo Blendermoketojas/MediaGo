@@ -14,11 +14,12 @@
           </v-toolbar-items>
         </v-toolbar>
         <div class="d-flex">
-          <dialog-sidebar :items="navItems" :additionVisible="false"></dialog-sidebar>
+          <dialog-sidebar :items="navItems" :additionVisible="true"></dialog-sidebar>
           <ul class="w-100">
-            <server-item></server-item>
-            <server-item @turnOffDialog="toggleDialog" v-for="server in servers" :key="server.id" :id="server.id" :serverTitle="server.name"
-              :genre="server.genre" :country="server.country" :theme="server.theme"></server-item>
+            <server-menu></server-menu>
+            <server-item @turnOffDialog="toggleDialog" v-for="server in servers" :key="server.id" :id="server.id"
+              :serverTitle="server.name" :genre="server.genre" :country="server.country"
+              :theme="server.theme"></server-item>
           </ul>
         </div>
       </v-card>
@@ -29,11 +30,13 @@
 <script>
 import DialogSidebar from "./playlist_dialog_components/DialogSidebar.vue";
 import ServerItem from "./serverlist/ServerItem.vue";
+import ServerMenu from "./ServerMenu.vue";
 
 export default {
   components: {
     DialogSidebar,
-    ServerItem
+    ServerItem,
+    ServerMenu
   },
   data() {
     return {

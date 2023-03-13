@@ -11,6 +11,7 @@ export default {
     data() {
         return {
             videoId: ' ',
+            isPlaying: null,
         }
     },
     props: {
@@ -29,11 +30,12 @@ export default {
         onPlayerStateChange(event) {
             switch(event.data) {
                 case YT.PlayerState.PLAYING:
-                var isPlaying = setInterval(this.updateCurrentTime, 1000);
+                this.isPlaying = setInterval(this.updateCurrentTime, 1000);
                 break;
                 case YT.PlayerState.ENDED:
-                clearInterval(isPlaying);
+                clearInterval(this.isPlaying);
                 this.$store.commit('setCurrentVideoPlayTime', 0);
+                this.videoEnded();
                 break;
             }  
         },
@@ -49,7 +51,7 @@ export default {
                 params: {
                     part: 'snippet',
                     id: this.videoId,
-                    key: 'AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI',
+                    key: 'API_KEY',
                 },
             }).then((response) => {
                 this.$store.commit('setVideoTitle', response.data.items[0].snippet.title);
@@ -64,6 +66,7 @@ export default {
         console.log(this.videoId);
     },
     unmounted() {
+        console.log("UNMOUNTED IN YOUTUBE VUE")
         clearInterval(this.isPlaying);
     }
 }

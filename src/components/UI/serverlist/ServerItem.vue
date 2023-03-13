@@ -8,6 +8,10 @@
         <div class="">
             <span>{{ genre }}</span>
         </div>
+        <div class="">
+            <font-awesome-icon icon="fa fa-star"/>
+            <span>{{ users }}</span>
+        </div>
         <div class="pe-5">
             {{ country }}
         </div>
@@ -41,6 +45,11 @@ export default {
             type: String,
             required: true,
             default: "https://showmax.akamaized.net/i/12cdc789-bff1-47db-9f18-622c8565fa33/format=webp/q=70/850x"
+        },
+        users: {
+            type: Number,
+            required: true,
+            default: 155
         }
     },
     computed: {
