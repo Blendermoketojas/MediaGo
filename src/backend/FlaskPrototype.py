@@ -164,10 +164,79 @@ def server_edit_owner(id, owner, newOwner):
             else:
                 return jsonify({'success':False, 'message':'user_id'})
 #########################################################################
-#DROPDOWN VALUES (ROUTES)
+#DROPDOWN VALUES
 #########################################################################
 
 def get_countries():
+    sql = "SELECT * FROM country"
+    cursor.execute(sql)
+    response = cursor.fetchall()
+    data = {'success':True, 'data':{}}
+    json = data['data']
+    tempint = 0
+    for row in response:
+        json[tempint] = {}
+        tempjson = json[tempint]
+        tempjson['id'] = row[1]
+        tempjson['name'] = row[0]
+        tempint += 1
+
+    return jsonify(data)
+
+def get_genres():
+    sql = "SELECT * FROM genre"
+    cursor.execute(sql)
+    response = cursor.fetchall()
+    data = {'success':True, 'data':{}}
+    json = data['data']
+    tempint = 0
+    for row in response:
+        json[tempint] = {}
+        tempjson = json[tempint]
+        tempjson['id'] = row[1]
+        tempjson['name'] = row[0]
+        tempint += 1
+
+    return jsonify(data)
+
+def get_countries_e():
+    #SELECT tb1.* FROM tb1 LEFT JOIN tb2 ON tb1.id = tb2.fk_id WHERE tb2.fk_id IS NULL
+    sql = "SELECT * FROM country LEFT JOIN servers ON country.id_country = servers.fk_countryid_country WHERE servers.fk_countryid_country IS NOT NULL"
+    cursor.execute(sql)
+    response = cursor.fetchall()
+    data = {'success':True, 'data':{}}
+    json = data['data']
+    try:
+        tempint = 0
+        for row in response:
+            json[tempint] = {}
+            tempjson = json[tempint]
+            tempjson['id'] = row[1]
+            tempjson['name'] = row[0]
+            tempint += 1
+
+        return jsonify(data)
+    except:
+        return jsonify({'success':False, 'message':'null'})
+
+def get_genres_e():
+    sql = "SELECT * FROM genre LEFT JOIN servers ON genre.id_genre = servers.fk_genreid_genre WHERE servers.fk_genreid_genre IS NOT NULL"
+    cursor.execute(sql)
+    response = cursor.fetchall()
+    data = {'success':True, 'data':{}}
+    json = data['data']
+    try:
+        tempint = 0
+        for row in response:
+            json[tempint] = {}
+            tempjson = json[tempint]
+            tempjson['id'] = row[1]
+            tempjson['name'] = row[0]
+            tempint += 1
+
+        return jsonify(data)
+    except:
+        return jsonify({'success':False, 'message':'null'})
     return
 
 #########################################################################
@@ -408,6 +477,25 @@ def process_s_edit_o():
 #DROPDOWN VALUES (ROUTES)
 #########################################################################
 
+@app.route('/get_dropdown_search', methods=['GET'])
+def process_get_d_search():
+    requestType = request.args.get('type', type = str)
+    if requestType == "country":
+        return get_countries_e()
+    elif requestType == "genre":
+        return get_genres_e()
+    else:
+        return jsonify({'success':False, 'message':'Argument not supported'})
+    
+@app.route('/get_dropdown_create', methods=['GET'])
+def process_get_d_create():
+    requestType = request.args.get('type', type = str)
+    if requestType == "country":
+        return get_countries()
+    elif requestType == "genre":
+        return get_genres()
+    else:
+        return jsonify({'success':False, 'message':'Argument not supported'})
 
 #########################################################################
 #ROOM GET DATA (ROUTES)
