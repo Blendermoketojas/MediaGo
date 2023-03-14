@@ -216,7 +216,7 @@ def get_countries_e():
             tempint += 1
 
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
 
 def get_genres_e():
@@ -235,9 +235,8 @@ def get_genres_e():
             tempint += 1
 
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
-    return
 
 #########################################################################
 #ROOM GET DATA
@@ -248,10 +247,13 @@ def get_server_info(id):
     val = (id,)
     cursor.execute(sql, val)
     response = cursor.fetchall()
+    print("BEFORE TRY CATCH")
     try:
+        print("IN TRY")
         for row in response:
             return jsonify({'success':True, 'id':row[3], 'name':row[0], 'description':row[1], 'users':row[2], 'owner':row[4], 'theme':row[5], 'genre':row[7], 'country':row[6]})
-    except:
+    finally:
+        print("IN CATCH")
         return jsonify({'success':False, 'message':'id'})
     
 def get_servers(popular, genre, country, offset, limit):
@@ -283,7 +285,7 @@ def get_servers(popular, genre, country, offset, limit):
             tempint += 1
 
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, country, offset, limit):
@@ -315,7 +317,7 @@ def get_servers(popular, country, offset, limit):
             tempint += 1
 
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, genre, offset, limit, temp, temp1):
@@ -347,7 +349,7 @@ def get_servers(popular, genre, offset, limit, temp, temp1):
             tempint += 1
 
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
 
 def get_servers(popular, offset, limit):
@@ -381,7 +383,7 @@ def get_servers(popular, offset, limit):
 
         print(data)
         return jsonify(data)
-    except:
+    finally:
         return jsonify({'success':False, 'message':'null'})
 
 #########################################################################
@@ -501,18 +503,13 @@ def process_get_d_create():
 #ROOM GET DATA (ROUTES)
 #########################################################################
 
-@app.route('/get_server_info', methods=['POST'])
+@app.route('/get_server_info', methods=['GET'])
 def process_s_info():
-    content_type = request.headers.get('Content-Type')
-    if (content_type == 'application/json'):
-        json = request.json
-        if isinstance(json.get('id'), int) and len(json) == 1:
-
-            return get_server_info(json.get('id'))
-        else:
-            return jsonify({'success':False, 'message':'JSON keys not supported!'})
+    requestType = request.args.get('id', type = int)
+    if requestType > -1:
+        return get_server_info(requestType)
     else:
-        return jsonify({'success':False, 'message':'Content type not supported'})
+        return jsonify({'success':False, 'message':'Argument not supported'})
 
 @app.route('/get_servers', methods=['POST'])
 def process_servers():

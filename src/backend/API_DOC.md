@@ -72,9 +72,10 @@ API:
         {
             'name':'CoolHole',
             'owner':/vartotojo id/,
-            'theme':'default',
-            'genre':'Rock',
-            'country':'LT(Ne tikslu dar)'
+            'description':'Kieta skyle',
+            'theme':1,
+            'genre':1,
+            'country':5
         }
 
     Galimas grįžtamas ryšys:
@@ -88,10 +89,128 @@ API:
                 'success':True, 
                 'id':/sukurtas kambario id/, 
                 'name':'CoolHole', 
-                'owner':/vartotojo id/, 
-                'theme':'default', 
-                'genre':'Rock', 
-                'country':'LT(Ne tikslu dar)
+                'owner':/vartotojo id/,
+                'description':'Kieta skyle', 
+                'theme':1, 
+                'genre':1, 
+                'country':5
             }
 
-4. 
+4. ...
+
+#. ==/get_server_info?id=/id/ : priimamas metodas GET
+    pvz.: ==/get_server_info?id=1
+    
+    1. Gaunamas JSON objektas jeigu yra rastas kambarys su šiuo ID:
+            {
+                'success':True, 
+                'id':/sukurtas kambario id/, 
+                'name':'CoolHole', 
+                'owner':/vartotojo id/,
+                'description':'Kieta skyle', 
+                'theme':1, 
+                'genre':1, 
+                'country':5
+            }
+    
+    2. Gaunamas JSON objektas jeigu nėra rastas kambarys su šiuo ID:
+            {
+                'success':False, 
+                'message':'id'
+            }
+
+#. ==/get_dropdown_search?type=/tipas/ ; priimamas metodas GET
+    1. tipas - genre pvz.: /get_dropdown_search?type=genre | grąžina visus žanrus kurie yra panaudoti egzistuojančiuose kambariuose.
+        Gauto JSON objekto pvz.:
+            {"data":{
+                "0":{
+                    "id":1,
+                    "name":"Rock"
+                    },
+                "1":{
+                    "id":2,
+                    "name":"Pop"
+                    },
+                "2":{
+                    "id":3,
+                    "name":"Hip Hop"
+                    },
+                    ...
+                },
+            "success":true
+            }
+    2. tipas - country pvz.: /get_dropdown_search?type=country | grąžina visas šalis kurios yra panaudotos egzistuojančiuose kambariuose.
+        Gauto JSON objekto pvz.:
+            {
+            "data":{
+                "0":{
+                    "id":1,
+                    "name":"Afghanistan"
+                    },
+                "1":{
+                    "id":2,
+                    "name":"Albania"
+                    },
+                "2":{
+                    "id":3,
+                    "name":"Algeria"
+                    },
+                    ...
+                },
+            "success":true
+            }
+    [KOMENTARAS] Jeigu grąžinto JSON objekto "data" masyvas yra tuščias, reiškia, kad nebuvo rasti elementai kurie būtų panaudoti egzistuojančiuose kambariuose (nėra sukurtų kambarių DB)
+
+    3. Nurodant blogai tipą grąžinamas toks JSON objektas:
+        {
+            'success':False, 
+            'message':'Argument not supported'
+        }
+
+#. ==/get_dropdown_create?type=/tipas/ ; priimamas metodas GET
+    1. tipas - genre pvz.: /get_dropdown_create?type=genre | grąžina visus žanrus kurie yra duomenų bazėje.
+        Gauto JSON objekto pvz.:
+            {"data":{
+                "0":{
+                    "id":1,
+                    "name":"Rock"
+                    },
+                "1":{
+                    "id":2,
+                    "name":"Pop"
+                    },
+                "2":{
+                    "id":3,
+                    "name":"Hip Hop"
+                    },
+                    ...
+                },
+            "success":true
+            }
+    2. tipas - country pvz.: /get_dropdown_create?type=country | grąžina visas šalis kurios yra duomenų bazėje.
+        Gauto JSON objekto pvz.:
+            {
+            "data":{
+                "0":{
+                    "id":1,
+                    "name":"Afghanistan"
+                    },
+                "1":{
+                    "id":2,
+                    "name":"Albania"
+                    },
+                "2":{
+                    "id":3,
+                    "name":"Algeria"
+                    },
+                    ...
+                },
+            "success":true
+            }
+    [KOMENTARAS] Jeigu grąžinto JSON objekto "data" masyvas yra tuščias, nėra supushinti duomenys į duomenų bazę.
+
+    3. Nurodant blogai tipą grąžinamas toks JSON objektas:
+        {
+            'success':False, 
+            'message':'Argument not supported'
+        }
