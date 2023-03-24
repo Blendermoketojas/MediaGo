@@ -9,7 +9,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 mydb = mysql.connector.connect(
     host = "localhost",
-    user = "root",
+    user = "plugdj",
     password = "root",
     database = "plugdj"
 )

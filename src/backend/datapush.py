@@ -2,13 +2,13 @@ import mysql.connector
 
 mydb = mysql.connector.connect(
     host = "localhost",
-    user = "root",
-    password = "",
+    user = "plugdj",
+    password = "root",
     database = "plugdj"
 )
 
-file1 = "C:/Users/IT/git/MediaGo/src/backend/countries.txt"
-file2 = "C:/Users/IT/git/MediaGo/src/backend/genres.txt"
+file1 = "C:\\Users\\Tadas\\plugdjnew\\MediaGo\\src\\backend\countries.txt"
+file2 = "C:\\Users\\Tadas\\plugdjnew\\MediaGo\\src\\backend\genres.txt"
 file3 = "smthng.txt"
 
 cursor = mydb.cursor()

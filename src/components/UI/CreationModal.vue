@@ -1,6 +1,6 @@
 <template>
     <div class="text-center">
-        <v-dialog z-index="1000" persistent width="1024">
+        <v-dialog v-model="isModalShown" z-index="1000" persistent width="1024">
             <v-card>
                 <v-card>
                     <v-card-title>
@@ -88,13 +88,13 @@ export default {
             }
         },
         handleCreation() {
-            if (this.creationMode === "server") {
+            // if (this.creationMode === "server") {
                 this.$http({
                     method: "post",
                     url: `http://${this.$store.getters.getBackendIP}:5000/server_add`,
                     data: { ...this.formData },
                 }).then((response) => this.$store.commit('addServer', response.data)).then((response) => this.isShown = false);
-            }
+            // }
         },
     },
     mounted() {

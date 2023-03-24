@@ -78,7 +78,7 @@ const store = createStore({
       selectedServer: null,
       ws: null,
       frontendIP: "localhost",
-      backendIP: "backend_ip",
+      backendIP: "localhost",
       YT_API_KEY: "API_KEY",
       isAuthenticated: false,
       servers: null,
@@ -89,15 +89,24 @@ const store = createStore({
       pageCount: null,
       isCreationModalShown: false,
       isEditingMode: false,
-      firstPlaylistSong: null
+      firstPlaylistSong: null,
+      initializationData: null,
     };
   },
   mutations: {
+    setInitializationData(state, payload) {
+      state.initializationData = payload;
+    },
+    setQueue(state, payload) {
+      if(state.initializationData.queue) {
+        state.initializationData.queue = payload;
+      }
+    },
     setIsEditingMode(state, payload) {
       state.isEditingMode = payload;
     },
     setYT_API_KEY(state, payload) {
-      state.setYT_API_KEY = payload;
+      state.YT_API_KEY = payload;
     },
     toggleIsCreationModalShown(state) {
       state.isCreationModalShown = !state.isCreationModalShown;
@@ -167,6 +176,9 @@ const store = createStore({
     }
   },
   getters: {
+    getInitializationData(state) {
+      return state.initializationData;
+    },
     getFirstPlaylistSong(state) {
       return state.firstPlaylistSong;
     },
