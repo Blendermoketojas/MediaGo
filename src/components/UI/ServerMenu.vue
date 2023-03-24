@@ -98,11 +98,8 @@ export default {
         },
         onFormDataChange(obj) {
             this.formReq = { ...this.formReq, ...obj }
-            console.log(formReq)
-            console.log(" changed")
         },
         makeRequest() {
-            console.log("making a request")
             var tempRequest;
             if (this.formData.country == 0 && this.formData.genre == 0) {
                 tempRequest = { popular: this.formData.popular, offset: this.formData.offset, limit: this.formData.limit }
@@ -113,7 +110,6 @@ export default {
             } else {
                 tempRequest = { ...this.formData }
             }
-            console.log(tempRequest)
             this.$http({
                 method: "post",
                 data: {

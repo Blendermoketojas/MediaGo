@@ -32,7 +32,6 @@ export default {
       if (this.$refs.serverCreation) {
         this.$refs.serverCreation.toggleIsShown();
         if (!this.$store.getters.getAllCountries || !this.$store.getters.getAllGenres) {
-          console.log('fetching genres all');
           this.$store.dispatch('setAllGenres');
           this.$store.dispatch('setAllCountries');
         }

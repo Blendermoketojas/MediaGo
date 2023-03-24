@@ -82,7 +82,6 @@ export default {
     methods: {
         toggleIsShown() {
             this.$store.commit('toggleIsCreationModalShown');
-            console.log("toggleIsShown")
             if (this.$store.getters.isEditingMode) {
                 this.formData = reactive({ ...this.$store.getters.getSelectedServer })
             }
@@ -99,7 +98,6 @@ export default {
     },
     mounted() {
         if (!hasListener(eventBus, 'open-server-edit')) {
-            console.log("bus created")
             eventBus.on('open-server-edit', () => {
                 // Do something here
                 this.toggleIsShown();

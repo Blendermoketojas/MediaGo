@@ -24,7 +24,7 @@
       <div class="d-flex flex-column h-100">
         <main class="retro-background position-relative" style="min-height: calc(100vh - 150px);">
           <div class="d-flex justify-content-center mt-3">
-            <youtube video-url="https://www.youtube.com/watch?v=jNQXAC9IVRw" width="400px" height="200px"
+            <youtube width="400px" height="200px"
               allowfullscreen="false" @ready="onReady" ref="youtube" />
           </div>
           <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">

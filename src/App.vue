@@ -23,9 +23,9 @@ export default {
 </script>
 
 <style>
-/* iframe {
+iframe {
   pointer-events: none;
-} */
+}
 
 /* width */
 ::-webkit-scrollbar {

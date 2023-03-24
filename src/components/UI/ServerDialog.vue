@@ -62,12 +62,6 @@ export default {
 
     }
   },
-  mounted() {
-
-  },
-  created() {
-    console.log("server dialog created")
-  }
 };
 </script>
 

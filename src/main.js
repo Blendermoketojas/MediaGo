@@ -79,7 +79,7 @@ const store = createStore({
       ws: null,
       frontendIP: "localhost",
       backendIP: "localhost",
-      YT_API_KEY: "API_KEY",
+      YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
       isAuthenticated: false,
       servers: null,
       allGenres: null,
@@ -97,9 +97,14 @@ const store = createStore({
     setInitializationData(state, payload) {
       state.initializationData = payload;
     },
+    setTimer(state) {
+      if(state.initializationData.timer) {
+        state.initializationData.timer = payload;
+      }
+    },
     setQueue(state, payload) {
       if(state.initializationData.queue) {
-        state.initializationData.queue = payload;
+        state.initializationData.queue = [...payload];
       }
     },
     setIsEditingMode(state, payload) {
@@ -279,8 +284,8 @@ function getDefaultState() {
     selectedServer: null,
     ws: null,
     frontendIP: "localhost",
-    backendIP: "BACKEND_IP", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
-    YT_API_KEY: "API_KEY",
+    backendIP: "localhost", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
+    YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
     isAuthenticated: false,
     allGenres: null,
     allCountries: null,

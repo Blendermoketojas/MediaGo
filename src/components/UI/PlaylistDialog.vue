@@ -96,10 +96,8 @@ export default {
   mounted() {
     const songsArray = this.songs.map((song) => song.link);
     const idsString = this.parseSongsToALine(songsArray);
-    console.log(idsString);
     const link = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${this.$store.getters.getYT_API_KEY}&part=snippet,contentDetails&fields=items.snippet(title,thumbnails(default), channelTitle),items.contentDetails(duration)`;
     if (!this.ytSongs) {
-      console.log("fetching...");
       this.$http({
         method: "get",
         url: link,

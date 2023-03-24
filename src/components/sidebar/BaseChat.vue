@@ -48,7 +48,12 @@
           ></base-comment>
         </ul>
         <v-card bg- v-show="selectedWindow === 'queue'" style="width: 100%">
-          <v-list bg-color="dark" class="playing" style="color: white" lines="one">
+          <v-list
+            bg-color="dark"
+            class="playing"
+            style="color: white"
+            lines="one"
+          >
             <v-list-item
               v-for="(data, index) in observedInitData"
               :key="data.title"
@@ -57,12 +62,11 @@
             >
               <v-tooltip activator="parent" location="left">
                 <div v-if="index === 0">
-                    <span style="color: violet">This track is playing!</span>
-                    <br>
+                  <span style="color: violet">This track is playing!</span>
+                  <br />
                 </div>
-                {{
-                data.value
-              }}</v-tooltip>
+                {{ data.value }}</v-tooltip
+              >
             </v-list-item>
           </v-list>
         </v-card>
@@ -76,6 +80,7 @@
 import ChatArea from "./ChatArea.vue";
 import BaseComment from "./BaseComment.vue";
 import { mapGetters } from "vuex";
+import eventBus from "../../EventBus";
 
 export default {
   components: {
@@ -87,20 +92,6 @@ export default {
       messages: [],
       selectedWindow: "chat",
       isScrolling: false,
-      items: [
-        {
-          title: "Item #1",
-          value: 1,
-        },
-        {
-          title: "Item #2",
-          value: 2,
-        },
-        {
-          title: "Item #3",
-          value: 3,
-        },
-      ],
     };
   },
   methods: {
@@ -151,6 +142,7 @@ export default {
     },
     ...mapGetters(["getInitializationData"]),
     observedInitData() {
+      eventBus.emit("queueChange", this.getInitializationData);
       return this.getInitializationData?.queue.map((q) => ({
         title: q.username,
         value: q.videoTitle,
@@ -185,8 +177,8 @@ export default {
 }
 
 .playing > .v-list-item:first-child {
-    background-color: green;
-  }
+  background-color: green;
+}
 
 .sidebar-height {
   height: calc(100vh - 190px);
