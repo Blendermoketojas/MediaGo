@@ -14,11 +14,15 @@
           </v-toolbar-items>
         </v-toolbar>
         <div class="d-flex">
-          <dialog-sidebar :items="navItems" :additionVisible="false"></dialog-sidebar>
+          <keep-alive>
+            <dialog-sidebar :items="navItems" :additionVisible="true"></dialog-sidebar>
+          </keep-alive>
           <ul class="w-100">
-            <server-item></server-item>
-            <server-item v-for="server in servers" :key="server.id" :id="server.id" :serverTitle="server.name"
-              :genre="server.genre" :country="server.country" :theme="server.theme"></server-item>
+            <server-menu @fetchServers="fetchServers"></server-menu>
+            <server-item @turnOffDialog="toggleDialog" v-for="server in servers" :key="server.id" :id="server.id"
+              :serverTitle="server.name" :genre="server.genre" :country="server.country" :users="server.users"
+              :theme="server.theme"></server-item>
+            <span v-if="servers?.length === 0" class="display-6 text-white m-3 fw-semibold">No servers found.</span>
           </ul>
         </div>
       </v-card>
@@ -29,30 +33,40 @@
 <script>
 import DialogSidebar from "./playlist_dialog_components/DialogSidebar.vue";
 import ServerItem from "./serverlist/ServerItem.vue";
+import ServerMenu from "./ServerMenu.vue";
 
 export default {
   components: {
     DialogSidebar,
-    ServerItem
+    ServerItem,
+    ServerMenu
   },
   data() {
     return {
       navItems: [{ id: 1, name: "Explore communities" }, { id: 2, name: 'Your likes' }],
       // HARDCODED FOR TEST PORPUSES
-      servers: [{ id: "65465161", name: "Disco server", theme: "#4894c6", country: 'France', genre: "Disco" },
-      { id: "15115615", name: "Dubstep lovers", theme: "#6548ds", country: 'Germany', genre: "Dubstep" }],
+      // servers: [{ id: "65465161", name: "Disco server", theme: "#4894c6", country: 'France', genre: "Disco" },
+      // { id: "15115615", name: "Dubstep lovers", theme: "#6548ds", country: 'Germany', genre: "Dubstep" }],
     };
   },
   computed: {
-
+    servers() {
+      return this.$store.getters.getServers;
+    }
   },
   methods: {
     toggleDialog() {
       this.$store.commit('toggleShowServersDialog')
     },
+    fetchServers() {
+
+    }
   },
   mounted() {
 
+  },
+  created() {
+    console.log("server dialog created")
   }
 };
 </script>

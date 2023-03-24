@@ -11,6 +11,13 @@ export default {
   components: {
     StreamPage,
     FrontPage
+  },
+  created() {
+    const parsedUser = JSON.parse(sessionStorage.getItem('user'));
+    if(parsedUser) {
+      this.$store.commit('setUser', parsedUser);
+      this.$store.commit('setIsAuthenticated', true);
+    }
   }
 }
 </script>

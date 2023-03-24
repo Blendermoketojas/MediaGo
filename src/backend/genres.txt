@@ -1,0 +1,150 @@
+Rock
+Pop
+Hip Hop
+Electronic
+Jazz
+Blues
+Classical
+Country
+Folk
+Reggae
+R&B (Rhythm and Blues)
+Soul
+Funk
+Metal
+Punk
+Alternative
+Indie
+World Music
+Latin
+K-pop
+J-pop
+Gospel
+Christian
+Opera
+Heavy Metal
+Grunge
+Techno
+House
+Trance
+Dubstep
+Drum and Bass
+Ambient
+Trip Hop
+Ska
+Reggaeton
+Afrobeat
+Blues Rock
+Psychedelic Rock
+Progressive Rock
+Hard Rock
+Soft Rock
+Glam Rock
+New Wave
+Synth-pop
+Post-punk
+Emo
+Screamo
+Gothic Rock
+Death Metal
+Black Metal
+Bluegrass
+Americana
+Cajun
+Zydeco
+Tejano
+Mariachi
+Ranchera
+Bolero
+Rumba
+Merengue
+Salsa
+Cumbia
+Mambo
+Bachata
+Tango Nuevo
+Gypsy Jazz
+Fusion Jazz
+Smooth Jazz
+New Age
+Worldbeat
+Alternative Country
+Country Pop
+Honky Tonk
+Outlaw Country
+Western Swing
+Neo Soul
+Quiet Storm
+Disco
+Eurodance
+Freestyle
+Italo Disco
+Hi-NRG
+Britpop
+Madchester
+Grime
+UK Garage
+Euro Pop
+Bubblegum Pop
+Teen Pop
+Boy Bands
+Girl Groups
+Motown
+Quiet Rock
+Lo-fi
+Vaporwave
+Synthwave
+Chillwave
+Ambient Pop
+Post-punk Revival
+Gothic Metal
+Thrash Metal
+Power Metal
+Nu Metal
+Industrial
+Noise
+Experimental
+Avant-garde
+Post-rock
+Shoegaze
+Dream Pop
+Folk Rock
+Roots Rock
+Surf Rock
+Stoner Rock
+Garage Rock
+Post-hardcore
+Math Rock
+Art Rock
+Krautrock
+Jazz Fusion
+Bebop
+Cool Jazz
+Acid Jazz
+Swing
+Big Band
+Bossa Nova
+Samba
+Tango
+Flamenco
+Celtic
+African
+Indian Classical
+Chinese Classical
+Japanese Classical
+Sufi
+Devotional
+Gregorian Chant
+Baroque
+Romantic
+Modern Classical
+Minimalism
+Soundtracks
+Game Music
+Children's Music
+Comedy Music
+Parody
+Holiday Music
+Acoustic
+Electric
+Instrumental

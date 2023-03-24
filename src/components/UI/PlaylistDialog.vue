@@ -17,22 +17,8 @@
           <dialog-sidebar :items="navItems" :additionVisible="true"></dialog-sidebar>
           <ul class="w-100">
             <new-playlist></new-playlist>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
-            <base-song></base-song>
+            <base-song v-for="song in ytSongs" :title="song.title" :duration="song.duration" :imgUrl="song.imgUrl"
+              :channelTitle="song.channelTitle"></base-song>
           </ul>
         </div>
       </v-card>
@@ -56,16 +42,51 @@ export default {
   },
   data() {
     return {
-      navItems: [{ id: 1, name: "first playlist" }]
+      navItems: [{ id: 1, name: "first playlist" }],
+      songs: [
+        { id: 1, link: "gG_dA32oH44" },
+        { id: 2, link: "YWyHZNBz6FE" },
+        { id: 3, link: "t0iZNTsu4Uo" }
+      ],
+      ytSongs: null,
     };
   },
   methods: {
     toggleDialog() {
       this.$store.commit('toggleShowPlaylistDialog')
     },
+    parseTime(duration) {
+      const match = duration.match(/PT(\d+M)?(\d+S)?/);
+      const minutes = match[1] ? parseInt(match[1].slice(0, -1)) : 0;
+      const seconds = match[2] ? parseInt(match[2].slice(0, -1)) : 0;
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    },
+    parseSongsToALine(array) {
+      let result = '';
+
+      // Loop through the array
+      for (let i = 0; i < array.length; i++) {
+        result += array[i];
+        if (i < array.length - 1) {
+          result += ',';
+        }
+      }
+      return result;
+    }
   },
   mounted() {
-
+    const songsArray = this.songs.map((song) => song.link);
+    const idsString = this.parseSongsToALine(songsArray);
+    console.log(idsString)
+    const link = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${this.$store.getters.getYT_API_KEY}&part=snippet,contentDetails&fields=items.snippet(title,thumbnails(default), channelTitle),items.contentDetails(duration)`
+    if (!this.ytSongs) {
+      console.log("fetching...")
+      this.$http({
+        method: "get",
+        url: link,
+      }).then((response) => this.ytSongs = response.data.items.map(item => ({ title: item.snippet.title, duration: this.parseTime(item.contentDetails.duration), imgUrl: item.snippet.thumbnails.default.url, channelTitle: item.snippet.channelTitle }))
+      ).then(() => this.$store.commit('setFirstPlaylistSong', this.songs[0].link));
+    }
   }
 };
 </script>

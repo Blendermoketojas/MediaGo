@@ -1,7 +1,6 @@
 <template>
-    <div class="d-flex flex-column flex-shrink-0 bg-dark sidebar-height" style="width: 4rem;">
-        <a href="/" class="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip"
-            data-bs-placement="right" data-bs-original-title="Icon-only">
+    <div class="d-flex flex-column flex-shrink-0 bg-dark sidebar-height" style="width: 3rem;">
+        <a href="/" class="d-block p-3 link-dark text-decoration-none">
             <svg class="bi" width="40" height="32">
                 <use xlink:href="#bootstrap"></use>
             </svg>

@@ -1,5 +1,5 @@
 <template>
-    <YouTube :videoid="video_id" :vars="{ 'autoplay': 1, 'controls': 0, 'fs': 0 }" :src="videoUrl"
+    <YouTube class="glowing-circle video-container" :videoid="video_id" :vars="{ 'autoplay': 1, 'controls': 0, 'fs': 0 }" :src="videoUrl"
         @state-change="onPlayerStateChange" autoplay="1" @ready="onPlayerReady" @ended="videoEnded" ref="youtube" />
 </template>
 
@@ -11,6 +11,7 @@ export default {
     data() {
         return {
             videoId: ' ',
+            isPlaying: null,
         }
     },
     props: {
@@ -29,11 +30,12 @@ export default {
         onPlayerStateChange(event) {
             switch(event.data) {
                 case YT.PlayerState.PLAYING:
-                var isPlaying = setInterval(this.updateCurrentTime, 1000);
+                this.isPlaying = setInterval(this.updateCurrentTime, 1000);
                 break;
                 case YT.PlayerState.ENDED:
-                clearInterval(isPlaying);
+                clearInterval(this.isPlaying);
                 this.$store.commit('setCurrentVideoPlayTime', 0);
+                this.videoEnded();
                 break;
             }  
         },
@@ -49,7 +51,7 @@ export default {
                 params: {
                     part: 'snippet',
                     id: this.videoId,
-                    key: 'AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI',
+                    key: this.$store.getters.getYT_API_KEY,
                 },
             }).then((response) => {
                 this.$store.commit('setVideoTitle', response.data.items[0].snippet.title);
@@ -64,7 +66,15 @@ export default {
         console.log(this.videoId);
     },
     unmounted() {
+        console.log("UNMOUNTED IN YOUTUBE VUE")
         clearInterval(this.isPlaying);
     }
 }
 </script>
+
+<style>
+.glowing-circle {
+  box-shadow: 0 0 10px 5px #b400ff;
+}
+
+</style>
