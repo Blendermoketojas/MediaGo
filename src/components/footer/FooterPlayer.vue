@@ -20,7 +20,7 @@
     <div class="d-flex flex-column ms-5 mb-2" style="min-width: 600px">
       <div class="mb-3">
         <span
-          >Lukas L <span style="color: #828282">is playing</span>
+          >{{ djName }} <span style="color: #828282">is playing</span>
           {{ this.$store.getters.getVideoTitle }}
         </span>
       </div>
@@ -36,9 +36,15 @@
   </div>
 </template>
 <script>
+import eventBus from '../../EventBus';
+
 export default {
-  mounted() {},
   computed: {
+    data() {
+      return {
+        djName: ''
+      }
+    },
     videoDuration() {
       const videoDuration = this.$store.getters.getVideoDuration;
       const seconds = videoDuration % 60;
@@ -53,9 +59,15 @@ export default {
       );
     },
     toggleDialog() {
-        this.$store.commit('toggleShowPlaylistDialog');
+      this.$store.commit("toggleShowPlaylistDialog");
     },
   },
+  mounted() {
+      eventBus.on("queueChange", (eventData) => {
+        console.log("queue change in footerplayer")
+        this.djName = eventData?.queue[0]?.username;
+      });
+    },
 };
 </script>
 

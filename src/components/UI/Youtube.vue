@@ -6,7 +6,6 @@
     :src="videoUrl"
     @state-change="onPlayerStateChange"
     autoplay="1"
-    @ready="onPlayerReady"
     @ended="videoEnded"
     ref="youtube"
   />
@@ -28,13 +27,19 @@ export default {
   methods: {
     onPlayerReady() {
       this.$refs.youtube.playVideo();
-      this.$store.commit("setVideoDuration", this.$refs.youtube.getDuration());
+      this.$store.commit(
+        "setVideoDuration",
+        Math.round(this.$refs.youtube.getDuration())
+      );
       this.getVideoTitle();
       console.log("onReady ran");
     },
+
     onPlayerStateChange(event) {
+      console.log("onPlayerStateChange() ran");
       switch (event.data) {
         case YT.PlayerState.PLAYING:
+          this.onPlayerReady();
           this.isPlaying = setInterval(this.updateCurrentTime, 1000);
           break;
         case YT.PlayerState.ENDED:
@@ -85,17 +90,15 @@ export default {
   },
   mounted() {
     eventBus.on("queueChange", (eventData) => {
-        console.log("EVENT BUS EMMITED")
-      this.videoId = eventData?.queue[0].link.match(/(?<=v=)[\w-]+/)[0];
+      this.videoId = eventData?.queue[0]?.link.match(/(?<=v=)[\w-]+/)[0];
+      this.$refs.youtube.pauseVideo(); // Pause the current video
       this.$refs.youtube.loadVideoById({
         videoId: this.videoId,
         startSeconds: eventData?.timer,
       });
-      this.$nextTick(() => {
-        this.$refs.youtube.playVideo();
-        this.$refs.youtube.$emit("state-change", {
-          data: YT.PlayerState.PLAYING,
-        });
+      this.$refs.youtube.playVideo(); // Play the loaded video
+      this.$refs.youtube.$emit("state-change", {
+        data: YT.PlayerState.PLAYING,
       });
     });
   },
