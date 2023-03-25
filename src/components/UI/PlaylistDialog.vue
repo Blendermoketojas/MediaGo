@@ -28,13 +28,16 @@
           ></dialog-sidebar>
           <ul class="w-100">
             <new-playlist></new-playlist>
-            <base-song
-              v-for="song in ytSongs"
-              :title="song.title"
-              :duration="song.duration"
-              :imgUrl="song.imgUrl"
-              :channelTitle="song.channelTitle"
-            ></base-song>
+            <VueDraggableNext v-model:items="ytSongs" style="margin: 0;" tag="ul">
+              <base-song
+                v-for="song in ytSongs"
+                :key="song.id"
+                :title="song.title"
+                :duration="song.duration"
+                :imgUrl="song.imgUrl"
+                :channelTitle="song.channelTitle"
+              ></base-song>
+            </VueDraggableNext>
           </ul>
         </div>
       </v-card>
@@ -46,19 +49,21 @@
 import DialogSidebar from "./playlist_dialog_components/DialogSidebar.vue";
 import NewPlaylist from "./NewPlaylist.vue";
 import BaseSong from "./playlist_dialog_components/BaseSong.vue";
+import { VueDraggableNext } from "vue-draggable-next";
 
 export default {
   components: {
     DialogSidebar,
     NewPlaylist,
     BaseSong,
+    VueDraggableNext,
   },
   props: {},
   data() {
     return {
       navItems: [{ id: 1, name: "first playlist" }],
       songs: [
-        { id: 1, link: "gG_dA32oH44" },
+        { id: 1, link: "jNQXAC9IVRw" },
         { id: 2, link: "YWyHZNBz6FE" },
         { id: 3, link: "t0iZNTsu4Uo" },
       ],
@@ -112,7 +117,11 @@ export default {
             })))
         )
         .then(() =>
-          this.$store.commit("setFirstPlaylistSong", { link: `https://www.youtube.com/watch?v=${this.songs[0].link}`,duration: this.durationToSeconds(this.ytSongs[0].duration), title: this.ytSongs[0].title })
+          this.$store.commit("setFirstPlaylistSong", {
+            link: `https://www.youtube.com/watch?v=${this.songs[0].link}`,
+            duration: this.durationToSeconds(this.ytSongs[0].duration),
+            title: this.ytSongs[0].title,
+          })
         );
     }
   },

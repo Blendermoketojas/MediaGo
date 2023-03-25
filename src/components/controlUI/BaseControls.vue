@@ -57,16 +57,18 @@ export default {
   },
   methods: {
     addSongToQueue() {
-      const response = {
-        type: "addToQueue",
-        username: this.getUser.name,
-        userId: this.getUser.id,
-        roomId: this.getSelectedServer.id,
-        duration: this.getFirstPlaylistSong.duration,
-        title: this.getFirstPlaylistSong.title,
-        link: this.getFirstPlaylistSong.link,
-      };
-      this.getWs.send(JSON.stringify(response));
+      if (this.getSelectedServer) {
+        const response = {
+          type: "addToQueue",
+          username: this.getUser.name,
+          userId: this.getUser.id,
+          roomId: this.getSelectedServer.id,
+          duration: this.getFirstPlaylistSong.duration,
+          title: this.getFirstPlaylistSong.title,
+          link: this.getFirstPlaylistSong.link,
+        };
+        this.getWs.send(JSON.stringify(response));
+      }
     },
     sendDislike() {},
     sendLike() {},

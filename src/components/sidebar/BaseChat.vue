@@ -65,6 +65,10 @@
                   <span style="color: violet">This track is playing!</span>
                   <br />
                 </div>
+                <div v-if="index === 1">
+                  <span style="color: yellow">Up next:</span>
+                  <br />
+                </div>
                 {{ data.value }}</v-tooltip
               >
             </v-list-item>
