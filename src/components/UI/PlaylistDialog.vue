@@ -28,10 +28,33 @@
           ></dialog-sidebar>
           <ul class="w-100">
             <new-playlist></new-playlist>
-            <VueDraggableNext v-model:items="ytSongs" style="margin: 0;" tag="ul">
+            <!-- <VueDraggableNext
+              v-model:items="ytSongs"
+              style="margin: 0"
+              tag="ul"
+              @end="onPlaylistChange"
+            >
               <base-song
-                v-for="song in ytSongs"
-                :key="song.id"
+                v-for="(song, index) in ytSongs"
+                :key="index"
+                :id="'song-' + song.id"
+                :title="song.title"
+                :duration="song.duration"
+                :imgUrl="song.imgUrl"
+                :channelTitle="song.channelTitle"
+              ></base-song>
+            </VueDraggableNext> -->
+            <VueDraggableNext
+              :animation="300"
+              tag="base-song"
+              :list="ytSongs"
+              item-key="title"
+              @end="handleChange"
+            >
+              <base-song
+                v-for="(song, index) in ytSongs"
+                :key="index"
+                :id="'song-' + song.id"
                 :title="song.title"
                 :duration="song.duration"
                 :imgUrl="song.imgUrl"
@@ -71,6 +94,13 @@ export default {
     };
   },
   methods: {
+    handleChange() {
+      this.$store.commit("setFirstPlaylistSong", {
+        link: `https://www.youtube.com/watch?v=${this.ytSongs[0].link}`,
+        duration: this.durationToSeconds(this.ytSongs[0].duration),
+        title: this.ytSongs[0].title,
+      });
+    },
     toggleDialog() {
       this.$store.commit("toggleShowPlaylistDialog");
     },
@@ -87,8 +117,6 @@ export default {
     },
     parseSongsToALine(array) {
       let result = "";
-
-      // Loop through the array
       for (let i = 0; i < array.length; i++) {
         result += array[i];
         if (i < array.length - 1) {
@@ -97,33 +125,38 @@ export default {
       }
       return result;
     },
+    initializePlaylist() {
+      const songsArray = this.songs.map((song) => song.link);
+      const idsString = this.parseSongsToALine(songsArray);
+      console.log(idsString)
+      const link = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${this.$store.getters.getYT_API_KEY}&part=snippet,contentDetails&fields=items.snippet(title,thumbnails(default), channelTitle),items.contentDetails(duration)`;
+      if (!this.ytSongs) {
+        this.$http({
+          method: "get",
+          url: link,
+        })
+          .then(
+            (response) =>
+              (this.ytSongs = response.data.items.map((item, index) => ({
+                title: item.snippet.title,
+                link: this.songs[index].link,
+                duration: this.parseTime(item.contentDetails.duration),
+                imgUrl: item.snippet.thumbnails.default.url,
+                channelTitle: item.snippet.channelTitle,
+              })))
+          )
+          .then(() =>
+            this.$store.commit("setFirstPlaylistSong", {
+              link: `https://www.youtube.com/watch?v=${this.ytSongs[0].link}`,
+              duration: this.durationToSeconds(this.ytSongs[0].duration),
+              title: this.ytSongs[0].title,
+            })
+          );
+      }
+    },
   },
   mounted() {
-    const songsArray = this.songs.map((song) => song.link);
-    const idsString = this.parseSongsToALine(songsArray);
-    const link = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${this.$store.getters.getYT_API_KEY}&part=snippet,contentDetails&fields=items.snippet(title,thumbnails(default), channelTitle),items.contentDetails(duration)`;
-    if (!this.ytSongs) {
-      this.$http({
-        method: "get",
-        url: link,
-      })
-        .then(
-          (response) =>
-            (this.ytSongs = response.data.items.map((item) => ({
-              title: item.snippet.title,
-              duration: this.parseTime(item.contentDetails.duration),
-              imgUrl: item.snippet.thumbnails.default.url,
-              channelTitle: item.snippet.channelTitle,
-            })))
-        )
-        .then(() =>
-          this.$store.commit("setFirstPlaylistSong", {
-            link: `https://www.youtube.com/watch?v=${this.songs[0].link}`,
-            duration: this.durationToSeconds(this.ytSongs[0].duration),
-            title: this.ytSongs[0].title,
-          })
-        );
-    }
+    this.initializePlaylist();
   },
 };
 </script>
