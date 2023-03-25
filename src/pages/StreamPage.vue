@@ -159,6 +159,10 @@ export default {
   watch: {
     watchServer: {
       handler(newVal, oldVal) {
+        if(!newVal) {
+          this.ws.send('close')
+          console.log("user leaves")
+        }
         this.init({ roomId: newVal.id, type: "subscribe", username: this.user.name, userId: this.user.id })
       },
       immediate: false
@@ -172,6 +176,10 @@ export default {
     // username = contents.username;
     // init(roomInfo);
   },
+  unmounted() {
+    this.ws.send('close')
+    console.log("user leaves")
+  }
 };
 </script>
 

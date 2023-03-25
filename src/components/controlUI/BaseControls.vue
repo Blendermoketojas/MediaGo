@@ -86,8 +86,18 @@ export default {
         this.getWs.send(JSON.stringify(response));
       }
     },
-    sendDislike() {},
-    sendLike() {},
+    sendLikeDislike(type) {
+      const response = {
+          type: "addToQueue",
+          username: this.getUser.name,
+          userId: this.getUser.id,
+          roomId: this.getSelectedServer.id,
+          duration: this.getFirstPlaylistSong.duration,
+          title: this.getFirstPlaylistSong.title,
+          link: this.getFirstPlaylistSong.link,
+        };
+        this.getWs.send(JSON.stringify(response));
+    },
     addToPlaylist() {},
   },
   mounted() {
