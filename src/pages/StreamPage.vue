@@ -106,6 +106,7 @@ export default {
         else if (data.type === "clientJoined") {
             this.$store.commit('setInitializationData', data);
         }
+        else if (data.type === 'clientSizeUpdate') this.$store.commit('setInitializationData', data);
         else if (data.type === 'likeUpdate') {
           console.log("likes updated")
           // document.getElementById("allLikes").innerHTML = data.update; // Update likes for client.
@@ -113,7 +114,7 @@ export default {
         }
         else if (data.type === 'disconnect' && data.username === username) console.log("disconnect") // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
         else if (data.type === 'queueUpdate') {
-          this.$store.commit('setQueue', data.queue);
+          this.$store.commit('setInitializationData', data);
         } // switchLikeButtons(data.isEmpty); // If queue is empty, disable like buttons.
         else if (data.type === 'banned' && data.username === username) // RENALDAS: userId negalejau padaryt cia, nes funkcija /ban [username] rasosi
         {
@@ -158,7 +159,7 @@ export default {
   watch: {
     watchServer: {
       handler(newVal, oldVal) {
-        this.init({ roomId: newVal.id, type: "subscribe", username: this.user.name })
+        this.init({ roomId: newVal.id, type: "subscribe", username: this.user.name, userId: this.user.id })
       },
       immediate: false
     }

@@ -95,16 +95,24 @@ const store = createStore({
   },
   mutations: {
     setInitializationData(state, payload) {
-      state.initializationData = payload;
-    },
-    setTimer(state) {
-      if(state.initializationData.timer) {
-        state.initializationData.timer = payload;
+      console.log(payload);
+      if (state.initializationData) {
+        // for (const key in payload) {
+        //   if (payload[key] !== null) {
+        //     state.initializationData[key] = payload[key];
+        //   }
+        // }
+        state.initializationData = updateObject(
+          state.initializationData,
+          payload
+        );
+      } else {
+        state.initializationData = payload;
       }
     },
-    setQueue(state, payload) {
-      if(state.initializationData.queue) {
-        state.initializationData.queue = [...payload];
+    setTimer(state) {
+      if (state.initializationData.timer) {
+        state.initializationData.timer = payload;
       }
     },
     setIsEditingMode(state, payload) {
@@ -178,7 +186,7 @@ const store = createStore({
     },
     setFirstPlaylistSong(state, payload) {
       state.firstPlaylistSong = payload;
-    }
+    },
   },
   getters: {
     getInitializationData(state) {
@@ -273,6 +281,20 @@ const store = createStore({
   },
 });
 
+function updateObject(objToUpdate, objWithNewValues) {
+  return Object.entries(objWithNewValues).reduce(
+    (accumulator, [key, value]) => {
+      if (value !== null) {
+        accumulator[key] = value;
+      } else if (!accumulator.hasOwnProperty(key)) {
+        accumulator[key] = objToUpdate[key];
+      }
+      return accumulator;
+    },
+    { ...objToUpdate }
+  );
+}
+
 function getDefaultState() {
   return {
     currentVideoPlayTime: 0,
@@ -294,7 +316,7 @@ function getDefaultState() {
     pageCount: null,
     isCreationModalShown: false,
     isEditingMode: false,
-    firstPlaylistSong: null
+    firstPlaylistSong: null,
   };
 }
 
@@ -309,7 +331,7 @@ function serverLeaveState() {
     ws: null,
     isCreationModalShown: false,
     isEditingMode: false,
-    firstPlaylistSong: null
+    firstPlaylistSong: null,
   };
 }
 

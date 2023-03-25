@@ -1,6 +1,9 @@
 <template>
   <div class="d-flex flex-row justify-content-center">
     <base-card>
+      <v-tooltip :disabled="!isDisabled" activator="parent" location="left"
+        ><span>You're already in queue!</span></v-tooltip
+      >
       <button
         :disabled="isDisabled"
         @click="addSongToQueue"
@@ -45,7 +48,20 @@ export default {
       "getSelectedServer",
       "getUser",
       "getFirstPlaylistSong",
+      "getInitializationData",
     ]),
+    observedInitData() {
+      console.log("init data changed in youtube player");
+      return this.getInitializationData;
+    },
+  },
+  watch: {
+    observedInitData: {
+      handler(newVal, oldVal) {
+        this.isDisabled = newVal.isDisabledButton;
+      },
+      deep: true,
+    },
   },
   data() {
     return {

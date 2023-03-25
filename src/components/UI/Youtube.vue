@@ -26,7 +26,8 @@ export default {
       nextSong: null,
       mountedPlayer: false,
       useJoinTimer: true,
-      joinedTimer: 0
+      joinedTimer: 0,
+      allowToPlayNext: false
     };
   },
   methods: {
@@ -71,11 +72,12 @@ export default {
     videoEnded() {
       clearInterval(this.isPlaying);
       this.$store.commit("setCurrentVideoPlayTime", 0);
-      if(this.nextSong) {
+      if(this.nextSong && this.allowToPlayNext) {
         this.loadAndPlay();
       }
     },
     loadAndPlay() {
+      this.allowToPlayNext = false;
       this.videoId = this.nextSong?.link.match(/(?<=v=)[\w-]+/)[0];
       let timer = 0;
       if(this.useJoinTimer) {
@@ -112,13 +114,14 @@ export default {
   computed: {
     ...mapGetters(["getInitializationData"]),
     observedInitData() {
+      console.log("init data changed in youtube player")
       return this.getInitializationData;
     },
   },
   mounted() {
     eventBus.on("queueChange", (eventData) => {
       this.nextSong = eventData?.queue[0];
-      this.joinedTimer = eventData.timer;
+      this.joinedTimer = eventData.elapsedTime;
     });
   },
   watch: {
@@ -131,6 +134,12 @@ export default {
       },
       immediate: true,
     },
+    observedInitData: {
+      handler(newVal, oldVal) {
+        this.allowToPlayNext = !newVal?.isSongPlaying;
+      },
+      deep: true
+    }
   },
   unmounted() {
     eventBus.off("queueChange");
