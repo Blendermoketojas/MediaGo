@@ -120,11 +120,9 @@ export default {
       container.scrollTop = container.scrollHeight + 10;
     },
     toggleChat() {
-      console.log("toggle chat");
       this.selectedWindow = "chat";
     },
     toggleQueue() {
-      console.log("toggle queue");
       this.selectedWindow = "queue";
     },
     onScroll() {

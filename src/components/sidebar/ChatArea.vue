@@ -13,12 +13,9 @@ export default {
             if(this.message === '') {
                 return;
             }
-            console.log("on enter" + this.user.name + " " + this.server.id)
             let type = "message";
             let text = this.message;
-            console.log(this.message)
             if (!this.ws) {
-                console.log("No WebSocket connection.");
                 return;
             }
             if (true) // If user is an admin.

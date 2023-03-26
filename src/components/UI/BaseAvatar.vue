@@ -33,7 +33,6 @@ export default {
     },
     methods: {
         handleSignOut() {
-            console.log("signing out")
             sessionStorage.clear('user');
             this.$store.dispatch('logout');
             this.$router.push({ path: '/authentication' })

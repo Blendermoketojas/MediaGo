@@ -64,7 +64,6 @@ export default {
   },
   mounted() {
       eventBus.on("queueChange", (eventData) => {
-        console.log("queue change in footerplayer")
         this.djName = eventData?.queue[0]?.username;
       });
     },

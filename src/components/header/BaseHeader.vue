@@ -83,7 +83,6 @@ export default {
   computed: {
     ...mapGetters(["getInitializationData"]),
     observedInitData() {
-      console.log("init data changed in youtube player");
       return this.getInitializationData;
     },
   },

@@ -27,27 +27,17 @@ export default {
       mountedPlayer: false,
       useJoinTimer: true,
       joinedTimer: 0,
-      allowToPlayNext: false
+      allowToPlayNext: false,
+      justJoined: true,
     };
   },
   methods: {
     onPlayerReady() {
-      console.log(this.$refs.youtube.getPlayerState())
-      if (!this.mountedPlayer && this.nextSong) {
-        this.loadAndPlay();
-        this.$store.commit(
-            "setVideoDuration",
-            Math.round(this.$refs.youtube.getDuration())
-          );
-          this.getVideoTitle();
-        console.log("onReady ran");
-      }
       this.mountedPlayer = true;
     },
     onPlayerStateChange(event) {
       switch (event.data) {
         case YT.PlayerState.PLAYING:
-          console.log("PLAYER STATE PLAYING");
           this.$store.commit(
             "setVideoDuration",
             Math.round(this.$refs.youtube.getDuration())
@@ -56,9 +46,6 @@ export default {
           this.isPlaying = setInterval(this.updateCurrentTime, 1000);
           break;
         case YT.PlayerState.ENDED:
-          console.log("PLAYER STATE ENDED");
-          clearInterval(this.isPlaying);
-          this.$store.commit("setCurrentVideoPlayTime", 0);
           this.videoEnded();
           break;
       }
@@ -72,15 +59,11 @@ export default {
     videoEnded() {
       clearInterval(this.isPlaying);
       this.$store.commit("setCurrentVideoPlayTime", 0);
-      if(this.nextSong && this.allowToPlayNext) {
-        this.loadAndPlay();
-      }
     },
     loadAndPlay() {
-      this.allowToPlayNext = false;
       this.videoId = this.nextSong?.link.match(/(?<=v=)[\w-]+/)[0];
       let timer = 0;
-      if(this.useJoinTimer) {
+      if (this.useJoinTimer) {
         timer = this.joinedTimer;
         this.useJoinTimer = false;
       }
@@ -88,7 +71,11 @@ export default {
         videoId: this.videoId,
         startSeconds: timer,
       });
-      console.log("PLAY LAODED VIDEO");
+      console.log("starting video on: " + timer + " second");
+      this.$store.commit(
+        "setVideoDuration",
+        Math.round(this.$refs.youtube.getDuration())
+      );
       this.$refs.youtube.playVideo(); // Play the loaded video
     },
     getVideoTitle() {
@@ -114,32 +101,35 @@ export default {
   computed: {
     ...mapGetters(["getInitializationData"]),
     observedInitData() {
-      console.log("init data changed in youtube player")
       return this.getInitializationData;
     },
   },
   mounted() {
-    eventBus.on("queueChange", (eventData) => {
-      this.nextSong = eventData?.queue[0];
-      this.joinedTimer = eventData.elapsedTime;
+    eventBus.on("start-playing-song", (eventData) => {
+      this.loadAndPlay();
+    });
+    eventBus.on("stop-playing-song", (eventData) => {
+      this.$refs.youtube.stopVideo();
+      this.$refs.youtube.$emit("state-change", { data: YT.PlayerState.ENDED });
     });
   },
   watch: {
-    nextSong: {
-      handler(newVal, oldVal) {
-        if (newVal && this.$refs.youtube.getPlayerState() !== 1) {
-          console.log(JSON.stringify(newVal))
-          this.loadAndPlay();
-        }
-      },
-      immediate: true,
-    },
     observedInitData: {
       handler(newVal, oldVal) {
-        this.allowToPlayNext = !newVal?.isSongPlaying;
+        this.allowToPlayNext = !newVal.isPlaying;
+        if (newVal.queue[0]) {
+          this.nextSong = newVal.queue[0];
+        } else {
+          this.nextSong = null;
+        }
+        if (this.justJoined) {
+          this.joinedTimer = newVal.elapsedTime;
+          this.loadAndPlay();
+          this.justJoined = false;
+        }
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   unmounted() {
     eventBus.off("queueChange");

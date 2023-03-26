@@ -28,7 +28,6 @@ export default {
   },
   methods: {
     openCreationDialog() {
-      console.log("open dialog triggered lol");
       if (this.$refs.serverCreation) {
         this.$refs.serverCreation.toggleIsShown();
         if (!this.$store.getters.getAllCountries || !this.$store.getters.getAllGenres) {

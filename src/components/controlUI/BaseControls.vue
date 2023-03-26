@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-row justify-content-center">
-    <base-card>
+    <base-card class="border">
       <v-tooltip :disabled="!isDisabled" activator="parent" location="left"
         ><span>You're already in queue!</span></v-tooltip
       >
@@ -10,12 +10,13 @@
         type="button"
         class="btn blue-thumb"
       >
-        <font-awesome-icon icon="fa fa-music"></font-awesome-icon> Play a song
+        <font-awesome-icon icon="fa fa-music"></font-awesome-icon> Join queue
       </button>
     </base-card>
     <div class="dj-table"></div>
     <base-card
-      class="d-flex flex-column justify-content-center align-items-center"
+      class="d-flex flex-column justify-content-center align-items-center border"
+      
     >
       <div class="mb-4">
         <button
@@ -82,14 +83,13 @@ export default {
   watch: {
     observedInitData: {
       handler(newVal, oldVal) {
-        console.log("init data changes in basecontrols");
         this.isDisabled = newVal.isDisabledButton;
-        this.areActionsDisabled = !newVal.isSongPlaying;
-        this.votedSize = newVal.update?.votedUsers.length;
+        this.areActionsDisabled = !newVal.isPlaying;
+        this.votedUsers = newVal.update?.votedUsers;
+        console.log("updating like amount")
         this.likes = newVal.update.likeAmount;
         // Update the progress bar value
-        this.progressBarValue = (100 / this.votedSize) * this.likes;
-        console.log(this.progressBarValue);
+        this.progressBarValue = (100 / this.votedUsers?.length) * this.likes;
       },
       deep: true,
     },
@@ -99,7 +99,7 @@ export default {
       isDisabled: false,
       areActionsDisabled: false,
       clickedAction: false,
-      votedSize: 0,
+      votedUsers: 0,
       likes: 0,
       progressBarValue: 0,
       totalVotes: 0
@@ -136,7 +136,6 @@ export default {
     addToPlaylist() {},
   },
   mounted() {
-    console.log("user: " + this.getUser);
   },
 };
 </script>

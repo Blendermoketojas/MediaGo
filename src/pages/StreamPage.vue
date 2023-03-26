@@ -1,7 +1,6 @@
 <template>
   <Teleport to="body">
-    <playlist-dialog>
-    </playlist-dialog>
+    <playlist-dialog> </playlist-dialog>
   </Teleport>
   <!-- <Teleport to="body">
     <dialog-loader>
@@ -9,9 +8,7 @@
     </dialog-loader>
   </Teleport> -->
   <keep-alive>
-    <Teleport to="body"> <server-dialog>
-
-      </server-dialog></Teleport>
+    <Teleport to="body"> <server-dialog> </server-dialog></Teleport>
   </keep-alive>
 
   <base-header></base-header>
@@ -22,10 +19,18 @@
 
     <div class="flex-fill">
       <div class="d-flex flex-column h-100">
-        <main class="retro-background position-relative" style="min-height: calc(100vh - 150px);">
+        <main
+          class="retro-background position-relative"
+          style="min-height: calc(100vh - 150px)"
+        >
           <div class="d-flex justify-content-center mt-3">
-            <youtube width="400px" height="200px"
-              allowfullscreen="false" @ready="onReady" ref="youtube" />
+            <youtube
+              width="400px"
+              height="200px"
+              allowfullscreen="false"
+              @ready="onReady"
+              ref="youtube"
+            />
           </div>
           <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">
           <img :src="gifsArray.gif2" alt="GIF" class="stickman">
@@ -33,8 +38,11 @@
           <img :src="gifsArray.gif4" alt="GIF" class="stickman">
           <img :src="gifsArray.gif5" alt="GIF" class="stickman">
           <img :src="gifsArray.gif6" alt="GIF" class="stickman"> -->
-          <div class="position-absolute bottom-0 start-50 translate-middle-x" style="margin-bottom: 10vh">
-            <base-controls></base-controls>
+          <div
+            class="position-absolute bottom-0 start-50 translate-middle-x"
+            style="margin-bottom: 10vh"
+          >
+            <base-controls v-if="watchServer"></base-controls>
           </div>
           <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">
           <img :src="gifsArray.gif2" alt="GIF" class="stickman">
@@ -67,6 +75,7 @@ import gif5 from "../assets/better gifs/7th.gif";
 import gif5back from "../assets/better gifs/7thback.gif";
 import gif6 from "../assets/better gifs/10.gif";
 import gif6back from "../assets/better gifs/10back.gif";
+import eventBus from "../EventBus";
 
 import BaseHeader from "../components/header/BaseHeader.vue";
 import BaseSidebar from "../components/sidebar/BaseSidebar.vue";
@@ -90,7 +99,7 @@ export default {
     ServerDialog,
     PlaylistDialog,
     BaseControls,
-    DialogLoader
+    DialogLoader,
   },
   methods: {
     init(roomInfo) {
@@ -98,38 +107,60 @@ export default {
         this.ws.onerror = this.ws.onopen = this.ws.onclose = null;
         this.ws.close();
       }
-      this.$store.commit('setWs', new WebSocket(`ws://${this.$store.getters.getFrontendIP}:6800`));
-      this.ws.onopen = () => { this.ws.send(JSON.stringify(roomInfo)) };
+      this.$store.commit(
+        "setWs",
+        new WebSocket(`ws://${this.$store.getters.getFrontendIP}:6800`)
+      );
+      this.ws.onopen = () => {
+        this.ws.send(JSON.stringify(roomInfo));
+      };
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === 'chat') this.addMessage(data.message) //showMessage(data.message); // Update chat for client.
+        if (data.type === "chat")
+          this.addMessage(
+            data.message
+          ); //showMessage(data.message); // Update chat for client.
         else if (data.type === "clientJoined") {
-            this.$store.commit('setInitializationData', data);
-        }
-        else if (data.type === 'clientSizeUpdate') this.$store.commit('setInitializationData', data);
-        else if (data.type === 'likeUpdate') {
-          if (data.reset) { this.$store.commit('setInitializationData', { update: { likes: 0, dislikes: 0 } }) }
-          else {
-            this.$store.commit('setInitializationData', data)
+          this.$store.commit("setInitializationData", data);
+        } else if (data.type === "clientSizeUpdate")
+          this.$store.commit("setInitializationData", data);
+        else if (data.type === "songStart") {
+          this.$store.commit("setInitializationData", data);
+          eventBus.emit('start-playing-song')
+        } else if (data.type === "songEnd") {
+          eventBus.emit('stop-playing-song')
+          this.$store.commit("setInitializationData", data);
+        } else if (data.type === "likeUpdate") {
+          if (data.reset) {
+            this.$store.commit("setInitializationData", {
+              update: data.update,
+            });
+          } else {
+            this.$store.commit("setInitializationData", data);
           }
-          
-        }
-        else if (data.type === 'disconnect' && data.username === username) console.log("disconnect") // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
-        else if (data.type === 'queueUpdate') {
-          this.$store.commit('setInitializationData', data);
+        } else if (data.type === "disconnect" && data.username === username)
+          console.log(
+            "disconnect"
+          ); // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
+        else if (data.type === "queueUpdate") {
+          this.$store.commit("setInitializationData", data);
         } // switchLikeButtons(data.isEmpty); // If queue is empty, disable like buttons.
-        else if (data.type === 'banned' && data.username === username) // RENALDAS: userId negalejau padaryt cia, nes funkcija /ban [username] rasosi
-        {
-
-        }
-        else if (data.type === 'skipped' && data.userId === userId) console.log("Your song has been skipped"); // RENALDAS: kai zmogaus daina buna praskipinta.
-        else if (data.type === 'tookOutSong' && data.userId === userId) console.log("Song has been successfully taken out");
-      }
-      this.ws.onclose = () => { this.ws = null; }
+        else if (data.type === "banned" && data.username === username) {
+          // RENALDAS: userId negalejau padaryt cia, nes funkcija /ban [username] rasosi
+        } else if (data.type === "skipped" && data.userId === userId)
+          console.log(
+            "Your song has been skipped"
+          ); // RENALDAS: kai zmogaus daina buna praskipinta.
+        else if (data.type === "tookOutSong" && data.userId === userId)
+          console.log("Song has been successfully taken out");
+      };
+      this.ws.onclose = () => {
+        this.ws = null;
+      };
     },
     addMessage(message) {
       this.$refs.chat.pushMessage(message);
-    }
+    },
   },
   data() {
     return {
@@ -148,7 +179,7 @@ export default {
         gif6: gif6,
         gif6back: gif6back,
       },
-    }
+    };
   },
   computed: {
     watchServer() {
@@ -156,19 +187,23 @@ export default {
     },
     ws() {
       return this.$store.getters.getWs;
-    }
+    },
   },
   watch: {
     watchServer: {
       handler(newVal, oldVal) {
-        if(!newVal) {
-          this.ws.send('close')
-          console.log("user leaves")
+        if (!newVal) {
+          this.ws.send("close");
         }
-        this.init({ roomId: newVal.id, type: "subscribe", username: this.user.name, userId: this.user.id })
+        this.init({
+          roomId: newVal.id,
+          type: "subscribe",
+          username: this.user.name,
+          userId: this.user.id,
+        });
       },
-      immediate: false
-    }
+      immediate: false,
+    },
   },
   mounted() {
     this.user = this.$store.getters.getUser;
@@ -179,9 +214,8 @@ export default {
     // init(roomInfo);
   },
   unmounted() {
-    this.ws.send('close')
-    console.log("user leaves")
-  }
+    this.ws.send("close");
+  },
 };
 </script>
 

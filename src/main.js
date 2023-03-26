@@ -95,7 +95,6 @@ const store = createStore({
   },
   mutations: {
     setInitializationData(state, payload) {
-      console.log(payload);
       if (state.initializationData) {
         // for (const key in payload) {
         //   if (payload[key] !== null) {
@@ -158,15 +157,12 @@ const store = createStore({
       state.servers = payload;
     },
     setAllGenres(state, payload) {
-      console.log("setAllGenres");
       state.allGenres = payload;
     },
     setAllCountries(state, payload) {
-      console.log("setAllCountries");
       state.allCountries = payload;
     },
     addServer(state, payload) {
-      console.log(payload);
       state.servers.push(payload);
     },
     setGenres(state, payload) {
@@ -358,7 +354,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isAuthenticated = store.state.isAuthenticated;
-  console.log(isAuthenticated);
 
   if (requiresAuth && !isAuthenticated) {
     next("/authentication");
