@@ -108,9 +108,11 @@ export default {
         }
         else if (data.type === 'clientSizeUpdate') this.$store.commit('setInitializationData', data);
         else if (data.type === 'likeUpdate') {
-          console.log("likes updated")
-          // document.getElementById("allLikes").innerHTML = data.update; // Update likes for client.
-          if (data.reset) console.log('reset') // switchLikeButtons(false);
+          if (data.reset) { this.$store.commit('setInitializationData', { update: { likes: 0, dislikes: 0 } }) }
+          else {
+            this.$store.commit('setInitializationData', data)
+          }
+          
         }
         else if (data.type === 'disconnect' && data.username === username) console.log("disconnect") // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
         else if (data.type === 'queueUpdate') {

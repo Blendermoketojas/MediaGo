@@ -18,21 +18,46 @@
       class="d-flex flex-column justify-content-center align-items-center"
     >
       <div class="mb-4">
-        <button type="button" class="fs-3 me-5 green-thumb">
+        <button
+          :disabled="areActionsDisabled"
+          type="button"
+          class="fs-3 me-5 green-thumb"
+          :class="{ 'disabled-actions': areActionsDisabled }"
+          @click="
+            () => {
+              sendLikeDislike(true);
+            }
+          "
+        >
           <font-awesome-icon icon="fa fa-thumbs-up"></font-awesome-icon>
         </button>
-        <button type="button" class="fs-3 me-5 red-thumb">
+        <button
+          :disabled="areActionsDisabled"
+          type="button"
+          class="fs-3 me-5 red-thumb"
+          :class="{ 'disabled-actions': areActionsDisabled }"
+          @click="
+            () => {
+              sendLikeDislike(false);
+            }
+          "
+        >
           <font-awesome-icon icon="fa fa-thumbs-down"></font-awesome-icon>
         </button>
-        <button type="button" class="fs-3 blue-thumb">
+        <button
+          :disabled="areActionsDisabled"
+          type="button"
+          class="fs-3 blue-thumb"
+          :class="{ 'disabled-actions': areActionsDisabled }"
+        >
           <font-awesome-icon icon="fa fa-plus"></font-awesome-icon>
         </button>
       </div>
       <v-progress-linear
         class="me-4"
-        style="width: 90%; background-color: crimson"
+        style="width: 90%; background-color: crimson;"
         color="green"
-        model-value="35"
+        :model-value="progressBarValue"
       ></v-progress-linear>
     </base-card>
   </div>
@@ -51,14 +76,20 @@ export default {
       "getInitializationData",
     ]),
     observedInitData() {
-      console.log("init data changed in youtube player");
       return this.getInitializationData;
     },
   },
   watch: {
     observedInitData: {
       handler(newVal, oldVal) {
+        console.log("init data changes in basecontrols");
         this.isDisabled = newVal.isDisabledButton;
+        this.areActionsDisabled = !newVal.isSongPlaying;
+        this.votedSize = newVal.update?.votedUsers.length;
+        this.likes = newVal.update.likeAmount;
+        // Update the progress bar value
+        this.progressBarValue = (100 / this.votedSize) * this.likes;
+        console.log(this.progressBarValue);
       },
       deep: true,
     },
@@ -66,6 +97,12 @@ export default {
   data() {
     return {
       isDisabled: false,
+      areActionsDisabled: false,
+      clickedAction: false,
+      votedSize: 0,
+      likes: 0,
+      progressBarValue: 0,
+      totalVotes: 0
     };
   },
   components: {
@@ -88,15 +125,13 @@ export default {
     },
     sendLikeDislike(type) {
       const response = {
-          type: "addToQueue",
-          username: this.getUser.name,
-          userId: this.getUser.id,
-          roomId: this.getSelectedServer.id,
-          duration: this.getFirstPlaylistSong.duration,
-          title: this.getFirstPlaylistSong.title,
-          link: this.getFirstPlaylistSong.link,
-        };
-        this.getWs.send(JSON.stringify(response));
+        type: "likeInput",
+        userId: this.getUser.id,
+        roomId: this.getSelectedServer.id,
+        likeType: type,
+        sentMoreThanOnce: this.clickedAction,
+      };
+      this.getWs.send(JSON.stringify(response));
     },
     addToPlaylist() {},
   },
@@ -109,6 +144,10 @@ export default {
 <style>
 .dj-table {
   width: 320px;
+}
+
+.disabled-actions {
+  cursor: not-allowed;
 }
 
 .green-thumb:hover {
