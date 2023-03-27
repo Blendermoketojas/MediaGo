@@ -87,13 +87,13 @@ export default {
         fetchGenres() {
             this.$http({
                 method: "get",
-                url: `http://${this.$store.getters.getBackendIP}:5000/get_dropdown_search?type=genre`,
+                url: `https://${this.$store.getters.getBackendIP}:5000/get_dropdown_search?type=genre`,
             }).then((response) => { this.$store.commit('setGenres', response.data.data); this.fetchCountries() });
         },
         fetchCountries() {
             this.$http({
                 method: "get",
-                url: `http://${this.$store.getters.getBackendIP}:5000/get_dropdown_search?type=country`,
+                url: `https://${this.$store.getters.getBackendIP}:5000/get_dropdown_search?type=country`,
             }).then((response) => this.$store.commit('setCountries', response.data.data));
         },
         onFormDataChange(obj) {
@@ -115,7 +115,7 @@ export default {
                 data: {
                     ...tempRequest
                 },
-                url: `http://${this.$store.getters.getBackendIP}:5000/get_servers`,
+                url: `https://${this.$store.getters.getBackendIP}:5000/get_servers`,
             }).then((response) => { this.$store.commit('setServers', response.data.data); this.$store.commit('setPageCount', response.data.pages)});
         }
     },

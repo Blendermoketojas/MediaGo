@@ -95,7 +95,7 @@ export default {
     handleLogin() {
       this.$http({
         method: "post",
-        url: `http://${this.$store.getters.getBackendIP}:5000/login`,
+        url: `https://${this.$store.getters.getBackendIP}:5000/login`,
         data: { email: this.formData.email, password: this.formData.password },
       }).then((response) => this.handleUserInitialization(response.data));
     },
@@ -103,7 +103,7 @@ export default {
     handleRegistration() {
       this.$http({
         method: "post",
-        url: `http://${this.$store.getters.getBackendIP}:5000/register`,
+        url: `https://${this.$store.getters.getBackendIP}:5000/register`,
         data: { ...this.formData },
       }).then((response) => this.handleUserInitialization(response.data));
     },

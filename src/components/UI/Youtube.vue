@@ -140,6 +140,6 @@ export default {
 
 <style>
 .glowing-circle {
-  box-shadow: 0 0 10px 5px #b400ff;
+  box-shadow: 0 0 10px 5px var(--default-theme);
 }
 </style>

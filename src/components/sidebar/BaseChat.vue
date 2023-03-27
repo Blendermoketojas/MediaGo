@@ -5,7 +5,7 @@
   >
     <div class="container-flex">
       <div class="row">
-        <div class="col" :class="{ 'active-link': selectedWindow === 'chat' }">
+        <div class="col" :class="{ 'active-background': selectedWindow === 'chat' }">
           <button
             @click="toggleChat"
             class="d-flex align-items-center justify-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom"
@@ -13,7 +13,7 @@
             <span class="fs-5 fw-semibold text-white">Live Chat</span>
           </button>
         </div>
-        <div class="col" :class="{ 'active-link': selectedWindow === 'queue' }">
+        <div class="col" :class="{ 'active-background': selectedWindow === 'queue' }">
           <button
             @click="toggleQueue"
             class="d-flex align-items-center justify-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom"

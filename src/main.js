@@ -79,7 +79,7 @@ const store = createStore({
       ws: null,
       frontendIP: "localhost",
       backendIP: "localhost",
-      YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
+      YT_API_KEY: "API_KEY",
       isAuthenticated: false,
       servers: null,
       allGenres: null,
@@ -261,17 +261,17 @@ const store = createStore({
     },
     setAllGenres({ state, commit }) {
       axios
-        .get(`http://${state.backendIP}:5000/get_dropdown_create?type=genre`)
+        .get(`https://${state.backendIP}:5000/get_dropdown_create?type=genre`)
         .then((response) => commit("setAllGenres", response.data.data));
     },
     setAllCountries({ state, commit }) {
       axios
-        .get(`http://${state.backendIP}:5000/get_dropdown_create?type=country`)
+        .get(`https://${state.backendIP}:5000/get_dropdown_create?type=country`)
         .then((response) => commit("setAllCountries", response.data.data));
     },
     setServer({ state, commit }, payload) {
       axios
-        .get(`http://${state.backendIP}:5000/get_server_info?id=${payload}`)
+        .get(`https://${state.backendIP}:5000/get_server_info?id=${payload}`)
         .then((response) => commit("setSelectedServer", response.data));
     },
   },
@@ -303,7 +303,7 @@ function getDefaultState() {
     ws: null,
     frontendIP: "localhost",
     backendIP: "localhost", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
-    YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
+    YT_API_KEY: "API_KEY",
     isAuthenticated: false,
     allGenres: null,
     allCountries: null,

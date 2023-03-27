@@ -23,6 +23,8 @@ export default {
 </script>
 
 <style>
+@import './style.css';
+
 iframe {
   pointer-events: none;
 }
