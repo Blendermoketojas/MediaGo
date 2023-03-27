@@ -59,6 +59,7 @@ export default {
       );
     },
     toggleDialog() {
+      this.$store.commit('setCreationModalIs', 'playlist');
       this.$store.commit("toggleShowPlaylistDialog");
     },
   },

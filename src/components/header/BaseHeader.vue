@@ -77,6 +77,8 @@ export default {
       this.$router.push({ path: "/floor/waiting_room" });
     },
     openEditDialog() {
+      this.$store.commit('setIsEditingMode', true);
+      this.$store.commit('setCreationModalIs', 'server');
       eventBus.emit("open-server-edit");
     },
   },

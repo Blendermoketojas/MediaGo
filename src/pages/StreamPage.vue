@@ -7,6 +7,9 @@
 
     </dialog-loader>
   </Teleport> -->
+  <Teleport to="body">
+    <creation-modal> </creation-modal>
+  </Teleport>
   <keep-alive>
     <Teleport to="body"> <server-dialog> </server-dialog></Teleport>
   </keep-alive>
@@ -87,6 +90,7 @@ import PlaylistDialog from "../components/UI/PlaylistDialog.vue";
 import ServerDialog from "../components/UI/ServerDialog.vue";
 import BaseControls from "../components/controlUI/BaseControls.vue";
 import DialogLoader from "../components/UI/DialogLoader.vue";
+import CreationModal from "../components/UI/CreationModal.vue";
 
 export default {
   components: {
@@ -100,6 +104,7 @@ export default {
     PlaylistDialog,
     BaseControls,
     DialogLoader,
+    CreationModal,
   },
   methods: {
     init(roomInfo) {
@@ -116,19 +121,17 @@ export default {
       };
       this.ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === "chat")
-          this.addMessage(
-            data.message
-          ); //showMessage(data.message); // Update chat for client.
+        if (data.type === "chat") this.addMessage(data.message);
+        //showMessage(data.message); // Update chat for client.
         else if (data.type === "clientJoined") {
           this.$store.commit("setInitializationData", data);
         } else if (data.type === "clientSizeUpdate")
           this.$store.commit("setInitializationData", data);
         else if (data.type === "songStart") {
           this.$store.commit("setInitializationData", data);
-          eventBus.emit('start-playing-song')
+          eventBus.emit("start-playing-song");
         } else if (data.type === "songEnd") {
-          eventBus.emit('stop-playing-song')
+          eventBus.emit("stop-playing-song");
           this.$store.commit("setInitializationData", data);
         } else if (data.type === "likeUpdate") {
           if (data.reset) {
@@ -139,18 +142,16 @@ export default {
             this.$store.commit("setInitializationData", data);
           }
         } else if (data.type === "disconnect" && data.username === username)
-          console.log(
-            "disconnect"
-          ); // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
+          console.log("disconnect");
+        // window.location.href = "../chat/createJoinRoom.html"; // Disconnect the client from the room.
         else if (data.type === "queueUpdate") {
           this.$store.commit("setInitializationData", data);
         } // switchLikeButtons(data.isEmpty); // If queue is empty, disable like buttons.
         else if (data.type === "banned" && data.username === username) {
           // RENALDAS: userId negalejau padaryt cia, nes funkcija /ban [username] rasosi
         } else if (data.type === "skipped" && data.userId === userId)
-          console.log(
-            "Your song has been skipped"
-          ); // RENALDAS: kai zmogaus daina buna praskipinta.
+          console.log("Your song has been skipped");
+        // RENALDAS: kai zmogaus daina buna praskipinta.
         else if (data.type === "tookOutSong" && data.userId === userId)
           console.log("Song has been successfully taken out");
       };

@@ -1,5 +1,4 @@
 <template>
-  <creation-modal ref="serverCreation"></creation-modal>
   <div class="d-flex flex-column flex-shrink-0 bg-dark sidebar-height position-fixed" style="width: 8rem">
     <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
       <button @click="openCreationDialog" v-if="additionVisible" href="#"
@@ -14,6 +13,7 @@
 <script>
 import NavItem from "./NavItem.vue";
 import CreationModal from "../CreationModal.vue";
+import eventBus from "../../../EventBus";
 
 export default {
   components: {
@@ -28,15 +28,8 @@ export default {
   },
   methods: {
     openCreationDialog() {
-      if (this.$refs.serverCreation) {
-        this.$refs.serverCreation.toggleIsShown();
-        if (!this.$store.getters.getAllCountries || !this.$store.getters.getAllGenres) {
-          this.$store.dispatch('setAllGenres');
-          this.$store.dispatch('setAllCountries');
-        }
-      } else {
-        console.warn('Server creation component is not available yet.');
-      }
+      this.$store.commit('setIsEditingMode', false);
+      eventBus.emit('open-server-edit');
     },
   },
   props: {

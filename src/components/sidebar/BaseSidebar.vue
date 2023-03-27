@@ -43,6 +43,7 @@ export default {
     },
     methods: {
         toggleDialog() {
+            this.$store.commit('setCreationModalIs', 'server');
             this.$store.commit('toggleShowServersDialog');
         },
     }

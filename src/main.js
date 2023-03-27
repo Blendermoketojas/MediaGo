@@ -87,10 +87,10 @@ const store = createStore({
       genres: null,
       countries: null,
       pageCount: null,
-      isCreationModalShown: false,
       isEditingMode: false,
       firstPlaylistSong: null,
       initializationData: null,
+      creationModalIs: null,
     };
   },
   mutations: {
@@ -114,14 +114,14 @@ const store = createStore({
         state.initializationData.timer = payload;
       }
     },
+    setCreationModalIs(state, payload) {
+      state.creationModalIs = payload;
+    },
     setIsEditingMode(state, payload) {
       state.isEditingMode = payload;
     },
     setYT_API_KEY(state, payload) {
       state.YT_API_KEY = payload;
-    },
-    toggleIsCreationModalShown(state) {
-      state.isCreationModalShown = !state.isCreationModalShown;
     },
     setPageCount(state, payload) {
       state.pageCount = payload;
@@ -185,6 +185,9 @@ const store = createStore({
     },
   },
   getters: {
+    getCreationModalIs(state) {
+      return state.creationModalIs;
+    },
     getInitializationData(state) {
       return state.initializationData;
     },
@@ -196,9 +199,6 @@ const store = createStore({
     },
     getIsEditingMode(state) {
       return state.isEditingMode;
-    },
-    getIsCreationModalShown(state) {
-      return state.isCreationModalShown;
     },
     getPageCount(state) {
       return state.pageCount;
@@ -310,7 +310,6 @@ function getDefaultState() {
     genres: null,
     countries: null,
     pageCount: null,
-    isCreationModalShown: false,
     isEditingMode: false,
     firstPlaylistSong: null,
   };
@@ -325,7 +324,6 @@ function serverLeaveState() {
     showServersDialog: false,
     selectedServer: null,
     ws: null,
-    isCreationModalShown: false,
     isEditingMode: false,
     firstPlaylistSong: null,
   };
@@ -344,6 +342,15 @@ const routes = [
     component: StreamPage,
   },
   { path: "/authentication", name: "Login", component: FrontPage },
+  {
+    path: "/:pathMatch(.*)",
+    redirect: {
+      name: "Main",
+      params: {
+        id: "waiting_room",
+      },
+    },
+  },
 ];
 
 const router = createRouter({
