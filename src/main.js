@@ -78,8 +78,8 @@ const store = createStore({
       selectedServer: null,
       ws: null,
       frontendIP: "localhost",
-      backendIP: "localhost",
-      YT_API_KEY: "API_KEY",
+      backendIP: "",
+      YT_API_KEY: "",
       isAuthenticated: false,
       servers: null,
       allGenres: null,
@@ -302,8 +302,8 @@ function getDefaultState() {
     selectedServer: null,
     ws: null,
     frontendIP: "localhost",
-    backendIP: "localhost", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
-    YT_API_KEY: "API_KEY",
+    backendIP: "", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
+    YT_API_KEY: "",
     isAuthenticated: false,
     allGenres: null,
     allCountries: null,
