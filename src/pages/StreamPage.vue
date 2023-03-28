@@ -23,8 +23,9 @@
     <div class="flex-fill">
       <div class="d-flex flex-column h-100">
         <main
-          class="retro-background position-relative"
+          class="position-relative"
           style="min-height: calc(100vh - 150px)"
+          :style="retroBackgroundStyle"
         >
           <div class="d-flex justify-content-center mt-3">
             <youtube
@@ -45,7 +46,7 @@
             class="position-absolute bottom-0 start-50 translate-middle-x"
             style="margin-bottom: 10vh"
           >
-            <base-controls v-if="watchServer"></base-controls>
+            <base-controls v-if="selectedServer"></base-controls>
           </div>
           <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">
           <img :src="gifsArray.gif2" alt="GIF" class="stickman">
@@ -91,6 +92,15 @@ import ServerDialog from "../components/UI/ServerDialog.vue";
 import BaseControls from "../components/controlUI/BaseControls.vue";
 import DialogLoader from "../components/UI/DialogLoader.vue";
 import CreationModal from "../components/UI/CreationModal.vue";
+import { mapGetters } from "vuex";
+
+const imageModules = import.meta.globEager("../assets/backgrounds/*.png");
+
+const images = Object.entries(imageModules).reduce((acc, [path, module]) => {
+  const filename = path.split("/").pop();
+  acc[filename] = module.default;
+  return acc;
+}, {});
 
 export default {
   components: {
@@ -183,18 +193,31 @@ export default {
     };
   },
   computed: {
-    watchServer() {
+    selectedServer() {
       return this.$store.getters.getSelectedServer;
     },
     ws() {
       return this.$store.getters.getWs;
     },
+    retroBackgroundStyle() {
+      const imageUrl = this.selectedServer?.theme?.link;
+      const imageName = imageUrl?.replace("../assets/backgrounds/", "");
+      const backgroundImageUrl = images[imageName];
+      return {
+        backgroundImage: `url("${backgroundImageUrl}")`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "contain",
+        backgroundPosition: "center center",
+        backgroundSize: "100% 100%",
+      };
+    },
   },
   watch: {
-    watchServer: {
+    selectedServer: {
       handler(newVal, oldVal) {
-        if (!newVal) {
-          this.ws.send("close");
+        console.log("getSelectedserver changed");
+        if (newVal && this.ws) {
+          this.ws.send(JSON.stringify({ type: "close" }));
         }
         this.init({
           roomId: newVal.id,
@@ -204,6 +227,7 @@ export default {
         });
       },
       immediate: false,
+      deep: true,
     },
   },
   mounted() {
@@ -215,7 +239,7 @@ export default {
     // init(roomInfo);
   },
   unmounted() {
-    this.ws.send("close");
+    this.ws.send(JSON.stringify({ type: "close" }));
   },
 };
 </script>

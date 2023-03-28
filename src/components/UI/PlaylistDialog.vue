@@ -28,22 +28,6 @@
           ></dialog-sidebar>
           <ul class="w-100">
             <new-playlist></new-playlist>
-            <!-- <VueDraggableNext
-              v-model:items="ytSongs"
-              style="margin: 0"
-              tag="ul"
-              @end="onPlaylistChange"
-            >
-              <base-song
-                v-for="(song, index) in ytSongs"
-                :key="index"
-                :id="'song-' + song.id"
-                :title="song.title"
-                :duration="song.duration"
-                :imgUrl="song.imgUrl"
-                :channelTitle="song.channelTitle"
-              ></base-song>
-            </VueDraggableNext> -->
             <VueDraggableNext
               :animation="300"
               tag="base-song"

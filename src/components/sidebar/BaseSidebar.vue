@@ -8,7 +8,7 @@
         </a>
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
             <li class="nav-item">
-                <router-link :to="linkToServer" href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip"
+                <router-link :to="linkToServer" href="#" class="nav-link active py-3 border-bottom" :style="{ backgroundColor: getSelectedServer?.theme?.color }" aria-current="page" title="" data-bs-toggle="tooltip"
                     data-bs-placement="right" data-bs-original-title="Home">
                     <font-awesome-icon icon="fa-solid fa-music" />
                 </router-link>
@@ -44,6 +44,7 @@ export default {
     },
     methods: {
         toggleDialog() {
+            this.$store.commit("setDialogSelectedTab", 'Explore communities');
             this.$store.commit('setCreationModalIs', 'server');
             this.$store.commit('toggleShowServersDialog');
         },

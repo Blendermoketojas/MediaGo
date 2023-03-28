@@ -29,6 +29,10 @@ iframe {
   pointer-events: none;
 }
 
+.pointer-none {
+  pointer-events: none;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

@@ -54,7 +54,11 @@
                   v-model="formServer.theme"
                   item-title="name"
                   item-value="id"
-                  :items="[{ id: 1, name: 'default' }]"
+                  :items="
+                    this.$store.getters?.getAllThemes || [
+                      { id: 0, name: 'fetching...' },
+                    ]
+                  "
                   label="Themes*"
                 ></v-autocomplete>
               </v-col>
@@ -95,6 +99,7 @@
 import { reactive } from "vue";
 import eventBus from "../../EventBus";
 import { hasListener } from "../../utils";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -122,10 +127,12 @@ export default {
         this.sizing.width = 1024;
         if (
           !this.$store.getters.getAllCountries ||
-          !this.$store.getters.getAllGenres
+          !this.$store.getters.getAllGenres ||
+          !this.$store.getters.getAllThemes
         ) {
           this.$store.dispatch("setAllGenres");
           this.$store.dispatch("setAllCountries");
+          this.$store.dispatch("setAllThemes");
         }
         if (this.$store.getters.getIsEditingMode) {
           this.formServer = reactive({
@@ -150,7 +157,7 @@ export default {
       if (this.$store.getters.getCreationModalIs === "server") {
         this.$http({
           method: "post",
-          url: `http://${this.$store.getters.getBackendIP}:5000/server_add`,
+          url: `http://${this.$store.getters.getBackendIP}:5000/${this.serverActions}`,
           data: { ...this.formServer },
         })
           .then((response) => this.$store.commit("addServer", response.data))
@@ -164,6 +171,15 @@ export default {
           .then((response) => this.$store.commit("addPlaylist", response.data))
           .then((response) => (this.isShown = false));
       }
+    },
+  },
+  computed: {
+    ...mapGetters(["getIsEditingMode"]),
+    playlistAction() {
+      return this.getIsEditingMode ? "playlist_edit" : "playlist_add";
+    },
+    serverActions() {
+      return this.getIsEditingMode ? "server_edit_info" : "server_add";
     },
   },
   mounted() {

@@ -5,7 +5,7 @@
         class="nav-link text-white py-3 border-bottom w-100" aria-current="page" title="">
         <font-awesome-icon icon="fa fa-plus"></font-awesome-icon>
       </button>
-      <nav-item v-for="item in items" :key="item.id || item.name" :name="item.name"></nav-item>
+      <nav-item :class="{'background-theme': item.name === getDialogSelectedTab}" v-for="item in items" :key="item.id || item.name" :id="item.id || item.name" :name="item.name"></nav-item>
     </ul>
   </div>
 </template>
@@ -14,6 +14,7 @@
 import NavItem from "./NavItem.vue";
 import CreationModal from "../CreationModal.vue";
 import eventBus from "../../../EventBus";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -22,9 +23,10 @@ export default {
   },
   data() {
     return {
-      // Define a `openCreationDialog` function reference
-      openEditDialog: this.openCreationDialog,
     };
+  },
+  computed: {
+    ...mapGetters(['getDialogSelectedTab'])
   },
   methods: {
     openCreationDialog() {
@@ -49,5 +51,9 @@ export default {
 .sidebar-height {
   height: calc(100vh - 64px);
   margin-top: 4rem;
+}
+
+.background-theme {
+  background-color: blue;
 }
 </style>

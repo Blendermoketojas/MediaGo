@@ -1,6 +1,7 @@
 <template>
   <YouTube
-    class="glowing-circle video-container"
+    class="video-container"
+    :style="{'box-shadow': `0 0 10px 5px ${getServer?.theme?.color}` }"
     :videoid="observedInitData?.queue[0]?.link"
     :vars="{ autoplay: 1, controls: 0, fs: 0 }"
     :src="videoUrl"
@@ -100,6 +101,9 @@ export default {
   },
   computed: {
     ...mapGetters(["getInitializationData"]),
+    getServer() {
+      return this.$store.getters.getSelectedServer;
+    },
     observedInitData() {
       return this.getInitializationData;
     },

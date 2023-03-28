@@ -1,7 +1,7 @@
 <template>
   <li class="nav-item">
     <button
-      href="#"
+      @click="changeSelectedTab"
       class="nav-link text-white py-3 border-bottom w-100"
       aria-current="page"
       title=""
@@ -20,6 +20,11 @@ export default {
         return {
 
         }
+    },
+    methods: {
+      changeSelectedTab() {
+        this.$store.commit('setDialogSelectedTab', this.name)
+      }
     },
     props: {
         id: {
