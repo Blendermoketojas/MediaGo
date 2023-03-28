@@ -78,7 +78,7 @@ const store = createStore({
       selectedServer: null,
       ws: null,
       frontendIP: "localhost",
-      backendIP: "",
+      backendIP: "localhost",
       YT_API_KEY: "",
       isAuthenticated: false,
       servers: null,
@@ -261,17 +261,17 @@ const store = createStore({
     },
     setAllGenres({ state, commit }) {
       axios
-        .get(`https://${state.backendIP}:5000/get_dropdown_create?type=genre`)
+        .get(`http://${state.backendIP}:5000/get_dropdown_create?type=genre`)
         .then((response) => commit("setAllGenres", response.data.data));
     },
     setAllCountries({ state, commit }) {
       axios
-        .get(`https://${state.backendIP}:5000/get_dropdown_create?type=country`)
+        .get(`http://${state.backendIP}:5000/get_dropdown_create?type=country`)
         .then((response) => commit("setAllCountries", response.data.data));
     },
     setServer({ state, commit }, payload) {
       axios
-        .get(`https://${state.backendIP}:5000/get_server_info?id=${payload}`)
+        .get(`http://${state.backendIP}:5000/get_server_info?id=${payload}`)
         .then((response) => commit("setSelectedServer", response.data));
     },
   },
@@ -302,7 +302,7 @@ function getDefaultState() {
     selectedServer: null,
     ws: null,
     frontendIP: "localhost",
-    backendIP: "", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
+    backendIP: "localhost",
     YT_API_KEY: "",
     isAuthenticated: false,
     allGenres: null,
@@ -331,6 +331,7 @@ function serverLeaveState() {
 
 import StreamPage from "./pages/StreamPage.vue";
 import FrontPage from "./pages/FrontPage.vue";
+import SettingsPage from "./pages/SettingsPage.vue"
 
 const routes = [
   {
@@ -340,6 +341,14 @@ const routes = [
       requiresAuth: true,
     },
     component: StreamPage,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    meta: {
+      requiresAuth: true,
+    },
+    component: SettingsPage,
   },
   { path: "/authentication", name: "Login", component: FrontPage },
   {

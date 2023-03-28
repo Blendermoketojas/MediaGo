@@ -1,4 +1,24 @@
 <template>
+  <Teleport to="body">
+    <v-dialog v-model="serverDescription" width="600">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">About {{ getSelectedServer?.name }}</span>
+        </v-card-title>
+        <v-card-text>{{ getSelectedServer?.description }}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red-darken-1"
+            variant="text"
+            @click="serverDescription = false"
+          >
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </Teleport>
   <header class="p-2 text-bg-dark">
     <div class="d-flex flex-row justify-content-between">
       <div class="d-flex align-items-center">
@@ -23,7 +43,10 @@
         </div>
         <div class="ms-5">
           <div v-if="this.$store.getters.getSelectedServer">
-            <button class="btn btn-outline-light">
+            <button
+              @click="serverDescription = true"
+              class="btn btn-outline-light"
+            >
               <font-awesome-icon icon="fa-solid fa-info-circle" /> About
               community
             </button>
@@ -66,6 +89,7 @@ export default {
   data() {
     return {
       clientsCount: 1,
+      serverDescription: false,
     };
   },
   components: {
@@ -77,13 +101,13 @@ export default {
       this.$router.push({ path: "/floor/waiting_room" });
     },
     openEditDialog() {
-      this.$store.commit('setIsEditingMode', true);
-      this.$store.commit('setCreationModalIs', 'server');
+      this.$store.commit("setIsEditingMode", true);
+      this.$store.commit("setCreationModalIs", "server");
       eventBus.emit("open-server-edit");
     },
   },
   computed: {
-    ...mapGetters(["getInitializationData"]),
+    ...mapGetters(["getInitializationData", "getSelectedServer"]),
     observedInitData() {
       return this.getInitializationData;
     },
