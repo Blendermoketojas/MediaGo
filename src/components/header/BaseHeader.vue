@@ -49,9 +49,16 @@
             >
               <font-awesome-icon icon="fa-solid fa-info-circle" /> About
               community
+              <v-tooltip activator="parent" location="bottom"
+                >Click too see information about this <br />
+                server like description, rules etc...</v-tooltip
+              >
             </button>
             <button class="btn btn-outline-light ms-2">
               <font-awesome-icon icon="fa-solid fa-star" />
+              <v-tooltip activator="parent" location="bottom"
+                >Amount of people following this server</v-tooltip
+              >
               {{ this.$store.getters?.getSelectedServer?.users }}
             </button>
             <button
@@ -62,9 +69,15 @@
               "
               class="btn btn-outline-warning ms-2"
             >
+              <v-tooltip activator="parent" location="bottom"
+                >Only visible to the owner</v-tooltip
+              >
               Edit server
             </button>
             <button @click="leaveServer" class="btn btn-outline-danger ms-2">
+              <v-tooltip activator="parent" location="bottom"
+                >Leave to waiting room</v-tooltip
+              >
               <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
             </button>
           </div>

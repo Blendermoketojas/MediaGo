@@ -5,7 +5,10 @@
   >
     <div class="container-flex">
       <div class="row">
-        <div class="col" :class="{ 'active-background': selectedWindow === 'chat' }">
+        <div
+          class="col"
+          :style="selectedWindow === 'chat' ? theme : null"
+        >
           <button
             @click="toggleChat"
             class="d-flex align-items-center justify-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom"
@@ -13,7 +16,10 @@
             <span class="fs-5 fw-semibold text-white">Live Chat</span>
           </button>
         </div>
-        <div class="col" :class="{ 'active-background': selectedWindow === 'queue' }">
+        <div
+          class="col"
+          :style="selectedWindow === 'queue' ? theme : null"
+        >
           <button
             @click="toggleQueue"
             class="d-flex align-items-center justify-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom"
@@ -41,13 +47,13 @@
           ></base-comment>
           <base-comment
             v-for="message in messages"
-            :key="Math.random()"
+            :key="message.username + Math.random()"
             :name="message.username"
             :comment="message.text"
             :time="message.time"
           ></base-comment>
         </ul>
-        <v-card bg- v-show="selectedWindow === 'queue'" style="width: 100%">
+        <v-card v-show="selectedWindow === 'queue'" style="width: 100%">
           <v-list
             bg-color="dark"
             class="playing"
@@ -103,7 +109,8 @@ export default {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      return `${hours}:${minutes}`;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+      return `${hours}:${formattedMinutes}`;
     },
     pushMessage(message) {
       const currentTime = this.calcCurrentTime();
@@ -150,6 +157,9 @@ export default {
         value: q.videoTitle,
       }));
     },
+    theme() {
+      return { backgroundColor: this.getServer?.theme?.color };
+    }
   },
   watch: {
     getServer: {

@@ -14,53 +14,58 @@
       </button>
     </base-card>
     <div class="dj-table"></div>
-    <base-card
-      class="d-flex flex-column justify-content-center align-items-center border"
-      
-    >
-      <div class="mb-4">
-        <button
-          :disabled="areActionsDisabled"
-          type="button"
-          class="fs-3 me-5 green-thumb"
-          :class="{ 'disabled-actions': areActionsDisabled }"
-          @click="
-            () => {
-              sendLikeDislike(true);
-            }
-          "
-        >
-          <font-awesome-icon icon="fa fa-thumbs-up"></font-awesome-icon>
-        </button>
-        <button
-          :disabled="areActionsDisabled"
-          type="button"
-          class="fs-3 me-5 red-thumb"
-          :class="{ 'disabled-actions': areActionsDisabled }"
-          @click="
-            () => {
-              sendLikeDislike(false);
-            }
-          "
-        >
-          <font-awesome-icon icon="fa fa-thumbs-down"></font-awesome-icon>
-        </button>
-        <button
-          :disabled="areActionsDisabled"
-          type="button"
-          class="fs-3 blue-thumb"
-          :class="{ 'disabled-actions': areActionsDisabled }"
-        >
-          <font-awesome-icon icon="fa fa-plus"></font-awesome-icon>
-        </button>
-      </div>
-      <v-progress-linear
-        class="me-4"
-        style="width: 90%; background-color: crimson;"
-        color="green"
-        :model-value="progressBarValue"
-      ></v-progress-linear>
-    </base-card>
+    <div>
+      <v-tooltip v-if="areActionsDisabled" activator="parent" location="top"
+        >You can perform actions when the song is playing</v-tooltip
+      >
+      <base-card
+        class="d-flex flex-column justify-content-center align-items-center border"
+        :class="{ 'pointer-none': areActionsDisabled }"
+      >
+        <div class="mb-4">
+          <button
+            :disabled="areActionsDisabled"
+            type="button"
+            class="fs-3 me-5 green-thumb"
+            :class="{ 'disabled-actions': areActionsDisabled }"
+            @click="
+              () => {
+                sendLikeDislike(true);
+              }
+            "
+          >
+            <font-awesome-icon icon="fa fa-thumbs-up"></font-awesome-icon>
+          </button>
+          <button
+            :disabled="areActionsDisabled"
+            type="button"
+            class="fs-3 me-5 red-thumb"
+            :class="{ 'disabled-actions': areActionsDisabled }"
+            @click="
+              () => {
+                sendLikeDislike(false);
+              }
+            "
+          >
+            <font-awesome-icon icon="fa fa-thumbs-down"></font-awesome-icon>
+          </button>
+          <button
+            :disabled="areActionsDisabled"
+            type="button"
+            class="fs-3 blue-thumb"
+            :class="{ 'disabled-actions': areActionsDisabled }"
+          >
+            <font-awesome-icon icon="fa fa-plus"></font-awesome-icon>
+          </button>
+        </div>
+        <v-progress-linear
+          class="me-4"
+          style="width: 90%; background-color: crimson"
+          color="green"
+          :model-value="progressBarValue"
+        ></v-progress-linear>
+      </base-card>
+    </div>
   </div>
 </template>
 
@@ -86,7 +91,7 @@ export default {
         this.isDisabled = newVal.isDisabledButton;
         this.areActionsDisabled = !newVal.isPlaying;
         this.votedUsers = newVal.update?.votedUsers;
-        console.log("updating like amount")
+        console.log("updating like amount");
         this.likes = newVal.update.likeAmount;
         // Update the progress bar value
         this.progressBarValue = (100 / this.votedUsers?.length) * this.likes;
@@ -102,7 +107,7 @@ export default {
       votedUsers: 0,
       likes: 0,
       progressBarValue: 0,
-      totalVotes: 0
+      totalVotes: 0,
     };
   },
   components: {
@@ -135,8 +140,7 @@ export default {
     },
     addToPlaylist() {},
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 

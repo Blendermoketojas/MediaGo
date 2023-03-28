@@ -13,14 +13,14 @@
             <v-card class="me-3">
                 <select v-model="formData.country" style="width: 160px; height: 40px" class="form-select border-0">
                     <option :value="0">All countries</option>
-                    <option v-for="country in this.$store.getters.getCountries" :value="country.id">{{ country.name }}
+                    <option v-for="country in this.$store.getters.getCountries" :key="country.id" :value="country.id">{{ country.name }}
                     </option>
                 </select>
             </v-card>
             <v-card class="me-3">
                 <select v-model="formData.genre" style="width: 150px; height: 40px" class="form-select border-0">
                     <option selected :value="0">All genres</option>
-                    <option v-for="genre in this.$store.getters.getGenres" :value="genre.id">{{ genre.name }}</option>
+                    <option v-for="genre in this.$store.getters.getGenres" :key="genre.id" :value="genre.id">{{ genre.name }}</option>
                 </select>
             </v-card>
             <v-card class="me-3">

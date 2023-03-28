@@ -78,12 +78,13 @@ const store = createStore({
       selectedServer: null,
       ws: null,
       frontendIP: "localhost",
-      backendIP: "localhost",
-      YT_API_KEY: "",
+      backendIP: "78.60.244.35",
+      YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
       isAuthenticated: false,
       servers: null,
       allGenres: null,
       allCountries: null,
+      allThemes: null,
       genres: null,
       countries: null,
       pageCount: null,
@@ -91,16 +92,12 @@ const store = createStore({
       firstPlaylistSong: null,
       initializationData: null,
       creationModalIs: null,
+      dialogSelectedTab: null
     };
   },
   mutations: {
     setInitializationData(state, payload) {
       if (state.initializationData) {
-        // for (const key in payload) {
-        //   if (payload[key] !== null) {
-        //     state.initializationData[key] = payload[key];
-        //   }
-        // }
         state.initializationData = updateObject(
           state.initializationData,
           payload
@@ -113,6 +110,9 @@ const store = createStore({
       if (state.initializationData.timer) {
         state.initializationData.timer = payload;
       }
+    },
+    setDialogSelectedTab(state, payload) {
+      state.dialogSelectedTab = payload;
     },
     setCreationModalIs(state, payload) {
       state.creationModalIs = payload;
@@ -162,6 +162,9 @@ const store = createStore({
     setAllCountries(state, payload) {
       state.allCountries = payload;
     },
+    setAllThemes(state, payload) {
+      state.allThemes = payload;
+    },
     addServer(state, payload) {
       state.servers.push(payload);
     },
@@ -185,6 +188,9 @@ const store = createStore({
     },
   },
   getters: {
+    getDialogSelectedTab(state) {
+      return state.dialogSelectedTab;
+    },
     getCreationModalIs(state) {
       return state.creationModalIs;
     },
@@ -242,14 +248,17 @@ const store = createStore({
     getAllGenres(state) {
       return state.allGenres;
     },
+    getAllThemes(state) {
+      return state.allThemes;
+    },
     getAllCountries(state) {
       return state.allCountries;
     },
     getGenres(state) {
       return state.genres;
     },
-    getCountries(state) {
-      return state.countries;
+    getGenres(state) {
+      return state.genres;
     },
   },
   actions: {
@@ -268,6 +277,11 @@ const store = createStore({
       axios
         .get(`http://${state.backendIP}:5000/get_dropdown_create?type=country`)
         .then((response) => commit("setAllCountries", response.data.data));
+    },
+    setAllThemes({ state, commit }) {
+      axios
+        .get(`http://${state.backendIP}:5000/get_dropdown_create?type=theme`)
+        .then((response) => { commit("setAllThemes", response.data.data); console.log(response.data.data) });
     },
     setServer({ state, commit }, payload) {
       axios
@@ -302,8 +316,8 @@ function getDefaultState() {
     selectedServer: null,
     ws: null,
     frontendIP: "localhost",
-    backendIP: "localhost",
-    YT_API_KEY: "",
+    backendIP: "78.60.244.35", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
+    YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
     isAuthenticated: false,
     allGenres: null,
     allCountries: null,

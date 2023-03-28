@@ -25,7 +25,7 @@
         </span>
       </div>
       <div>
-        <v-progress-linear color="blue-lighten-3" :model-value="videoProgress">
+        <v-progress-linear :color='getServer?.theme?.color' :model-value="videoProgress">
           <v-tooltip activator="parent" location="start"
             >Tooltip</v-tooltip
           ></v-progress-linear
@@ -36,15 +36,21 @@
   </div>
 </template>
 <script>
-import eventBus from '../../EventBus';
+import eventBus from "../../EventBus";
 
 export default {
-  computed: {
-    data() {
-      return {
-        djName: ''
-      }
+  data() {
+    return {
+      djName: "",
+    };
+  },
+  methods: {
+    toggleDialog() {
+      this.$store.commit("setCreationModalIs", "playlist");
+      this.$store.commit("toggleShowPlaylistDialog");
     },
+  },
+  computed: {
     videoDuration() {
       const videoDuration = this.$store.getters.getVideoDuration;
       const seconds = videoDuration % 60;
@@ -58,16 +64,15 @@ export default {
         100
       );
     },
-    toggleDialog() {
-      this.$store.commit('setCreationModalIs', 'playlist');
-      this.$store.commit("toggleShowPlaylistDialog");
-    },
+    getServer() {
+      return this.$store.getters.getSelectedServer;
+    }
   },
   mounted() {
-      eventBus.on("queueChange", (eventData) => {
-        this.djName = eventData?.queue[0]?.username;
-      });
-    },
+    eventBus.on("queueChange", (eventData) => {
+      this.djName = eventData?.queue[0]?.username;
+    });
+  },
 };
 </script>
 
