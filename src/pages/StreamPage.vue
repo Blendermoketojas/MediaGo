@@ -15,7 +15,7 @@
   </keep-alive>
 
   <base-header></base-header>
-  <div class="d-flex flex-row justify-content-between">
+  <div ref="streamWindow" class="d-flex flex-row justify-content-between">
     <aside>
       <base-sidebar></base-sidebar>
     </aside>
@@ -26,6 +26,7 @@
           class="position-relative"
           style="min-height: calc(100vh - 150px)"
           :style="retroBackgroundStyle"
+          :class="{ 'retro-background': selectedServer === null }"
         >
           <div class="d-flex justify-content-center mt-3">
             <youtube
@@ -36,18 +37,29 @@
               ref="youtube"
             />
           </div>
-          <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">
-          <img :src="gifsArray.gif2" alt="GIF" class="stickman">
-          <img :src="gifsArray.gif3" alt="GIF" class="stickman">
-          <img :src="gifsArray.gif4" alt="GIF" class="stickman">
-          <img :src="gifsArray.gif5" alt="GIF" class="stickman">
-          <img :src="gifsArray.gif6" alt="GIF" class="stickman"> -->
           <div
             class="position-absolute bottom-0 start-50 translate-middle-x"
             style="margin-bottom: 10vh"
           >
             <base-controls v-if="selectedServer"></base-controls>
           </div>
+          <!-- <v-container>
+            <v-row no-gutters class="flex-row row-no-spacing">
+              <v-col v-for="n in 20" :key="n" cols="1" class="col-no-spacing">
+                <img :src="gifsArray.gif1" alt="GIF" class="stickman" />
+              </v-col>
+            </v-row>
+          </v-container> -->
+          <!-- <div id="app">
+            <div class="avatars-container">
+              <PlayerAvatar
+                v-for="(player, index) in players"
+                :key="index"
+                :avatar="player.avatar"
+                :playerName="player.name"
+              />
+            </div>
+          </div> -->
           <!-- <img :src="gifsArray.gif1" alt="GIF" class="stickman">
           <img :src="gifsArray.gif2" alt="GIF" class="stickman">
           <img :src="gifsArray.gif3" alt="GIF" class="stickman">
@@ -90,9 +102,11 @@ import ServerItem from "../components/UI/serverlist/ServerItem.vue";
 import PlaylistDialog from "../components/UI/PlaylistDialog.vue";
 import ServerDialog from "../components/UI/ServerDialog.vue";
 import BaseControls from "../components/controlUI/BaseControls.vue";
+// import PlayerAvatar from "../components/UI/DialogLoader.vue";
 import DialogLoader from "../components/UI/DialogLoader.vue";
 import CreationModal from "../components/UI/CreationModal.vue";
 import { mapGetters } from "vuex";
+import PlayerAvatar from "../components/UI/PlayerAvatar.vue";
 
 const imageModules = import.meta.globEager("../assets/backgrounds/*.png");
 
@@ -115,6 +129,7 @@ export default {
     BaseControls,
     DialogLoader,
     CreationModal,
+    PlayerAvatar,
   },
   methods: {
     init(roomInfo) {
@@ -176,6 +191,11 @@ export default {
   data() {
     return {
       user: null,
+      players: [
+        { name: 'Player 1', avatar: 'avatar1.png' },
+        { name: 'Player 2', avatar: 'avatar2.png' },
+        { name: 'Player 3', avatar: 'avatar3.png' }
+      ],
       gifsArray: {
         gif1: gif1,
         gif1back: gif1back,
@@ -203,8 +223,9 @@ export default {
       const imageUrl = this.selectedServer?.theme?.link;
       const imageName = imageUrl?.replace("../assets/backgrounds/", "");
       const backgroundImageUrl = images[imageName];
+      const defaultImageUrl = images["Cyber.png"];
       return {
-        backgroundImage: `url("${backgroundImageUrl}")`,
+        backgroundImage: `url("${backgroundImageUrl || defaultImageUrl}")`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "contain",
         backgroundPosition: "center center",
@@ -232,6 +253,12 @@ export default {
   },
   mounted() {
     this.user = this.$store.getters.getUser;
+    const streamWindow = this.$refs.streamWindow;
+    streamWindow.addEventListener("wheel", (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+      }
+    });
     // const roomInfo = sessionStorage.getItem("roomInfo");
     // const contents = JSON.parse(roomInfo);
     // roomId = contents.roomId;
@@ -254,12 +281,33 @@ main {
   padding: 0;
 }
 
+.row-no-spacing {
+  margin-top: 4px;
+  margin-bottom: -4px;
+}
+
+.col-no-spacing {
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+
 .yt-size {
   width: 37%;
 }
+.avatars-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+}
 
 .retro-background {
-  background-image: url("../assets/pultas.png");
+  background-image: url("../assets/backgrounds/Cyber.png");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;

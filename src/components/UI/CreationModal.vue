@@ -77,6 +77,13 @@
                   required
                 ></v-text-field>
               </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <v-textarea
+                  v-model="formPlaylist.description"
+                  label="Playlist description*"
+                  required
+                ></v-textarea>
+              </v-col>
             </v-row>
           </v-container>
           <small>*indicates required field</small>
@@ -117,6 +124,8 @@ export default {
       }),
       formPlaylist: reactive({
         name: "",
+        description: "",
+        user_id: this.$store.getters.getUser?.id,
       }),
     };
   },
@@ -155,26 +164,35 @@ export default {
     },
     handleCreation() {
       if (this.$store.getters.getCreationModalIs === "server") {
+        console.log(this.formServer);
         this.$http({
           method: "post",
           url: `http://${this.$store.getters.getBackendIP}:5000/${this.serverActions}`,
-          data: { ...this.formServer },
+          data: {
+            country: this.formServer?.country,
+            description: this.formServer?.description,
+            genre: this.formServer?.genre,
+            id: this.formServer?.id,
+            name: this.formServer?.name,
+            theme: this.formServer?.theme.id,
+            owner: this.formServer?.owner,
+          },
         })
-          .then((response) => this.$store.commit("addServer", response.data))
+          .then((response) => {this.$store.commit("addServer", response.data); console.log(response.data)})
           .then((response) => (this.isShown = false));
       } else {
         this.$http({
           method: "post",
-          url: `http://${this.$store.getters.getBackendIP}:5000/playlist_add`,
+          url: `http://${this.$store.getters.getBackendIP}:5000/${this.playlistAction}`,
           data: { ...this.formPlaylist },
         })
-          .then((response) => this.$store.commit("addPlaylist", response.data))
+          .then((response) => console.log(response.data))
           .then((response) => (this.isShown = false));
       }
     },
   },
   computed: {
-    ...mapGetters(["getIsEditingMode"]),
+    ...mapGetters(["getIsEditingMode", "getUser"]),
     playlistAction() {
       return this.getIsEditingMode ? "playlist_edit" : "playlist_add";
     },

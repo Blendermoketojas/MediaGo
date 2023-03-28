@@ -1,9 +1,9 @@
 RASYK CIA KO REIKIA
 (#. "Kam skirtas metodas" / "Ka siusi per linka" / "ka nori gauti is linko" : "Vardas, kaz uzprase")
 pvz.:
-1. Registruoju vartotoja / nickname, email, password, / id, nickname, "personal access token" : Tadas;
+1. Registruoju vartotoja / nickname, email, password / id, nickname, "personal access token" : Tadas;
 2. GET/POST/PUT/DELETE song many to one playlist / playlist_id, link / id, playlist_id, link : Tadas
-3. GET/POST/PUT/DELETE playlist / user_id, name, description, is_selected (Default False) / id, name, description, is_selected (boolean) : Tadas
+3. GET/POST/PUT/DELETE playlist / user_id, name, description, is_selected, (Default False) / id, name, description, is_selected (boolean) : Tadas
 4. GET/POST/PUT/DELETE Server / name, owner (default owneris kuris sukure, siusiu user id), theme (Default - 'default') / id, name, owner, theme, users = (Array: id, nickname, level) : Tadas
 5. Gauti users kambaryje / server_id / users = (Array: id, nickname, level) : Renaldas
 

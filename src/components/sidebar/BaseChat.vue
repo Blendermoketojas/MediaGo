@@ -1,6 +1,7 @@
 <template>
   <div
     class="d-flex flex-column align-items-stretch flex-shrink-0 bg-dark fixed-right"
+    :class="{'pointer-none': !getServer}"
     style="width: 320px"
   >
     <div class="container-flex">

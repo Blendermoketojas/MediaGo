@@ -92,7 +92,9 @@ const store = createStore({
       firstPlaylistSong: null,
       initializationData: null,
       creationModalIs: null,
-      dialogSelectedTab: null
+      dialogSelectedTab: null,
+      playlists: [],
+      selectedPlaylist: null
     };
   },
   mutations: {
@@ -110,6 +112,19 @@ const store = createStore({
       if (state.initializationData.timer) {
         state.initializationData.timer = payload;
       }
+    },
+    setPlaylists(state, payload) {
+      state.playlists = payload;
+    },
+    setSelectedPlaylist(state, payload) {
+      state.selectedPlaylist = payload;
+    },
+    addPlaylist(state, payload) {
+      state.playlists.push(payload);
+    },
+    addSongs(state, payload) {
+      const index = state.playlists.findIndex(p => payload?.playlistId === p.id);
+      state.playlists[index].songs = payload?.songs;
     },
     setDialogSelectedTab(state, payload) {
       state.dialogSelectedTab = payload;
@@ -188,6 +203,12 @@ const store = createStore({
     },
   },
   getters: {
+    getPlaylists(state) {
+      return state.playlists;
+    },
+    getSelectedPlaylist(state) {
+      return state.selectedPlaylist;
+    },
     getDialogSelectedTab(state) {
       return state.dialogSelectedTab;
     },

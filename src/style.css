@@ -19,6 +19,10 @@
   background-color: var(--default-theme);
 }
 
+body {
+  touch-action: pan-x pan-y;
+}
+
 /* a {
   font-weight: 500;
   color: #646cff;

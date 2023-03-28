@@ -139,15 +139,30 @@ export default {
     },
   },
   mounted() {
+    this.$http({
+      method: "post",
+      url: `http://${this.$store.getters.getBackendIP}:5000/playlists_get`,
+      data: { id: this.$store.getters.getUser.id },
+    })
+      .then((response) => {
+        this.$store.commit("setPlaylists", response.data.playlists);
+        this.navItems = response.data.playlists;
+        this.$store.commit("setSelectedPlaylist", response.data.playlists[0]);
+      })
+      .then((response) => {
+        this.$http({
+          method: "post",
+          url: `http://${this.$store.getters.getBackendIP}:5000/playlists_get`,
+          data: { id: this.$store.getters.getUser.id },
+        }).then((songsResponse) =>
+          // this.$store.commit("setPlaylists", response.data.playlists);
+          console.log(songsResponse.data)
+        );
+      });
     this.initializePlaylist();
   },
 };
 </script>
-<!-- channelTitle:"KanyeWestVEVO"
-duration:"4:12"
-imgUrl:"https://i.ytimg.com/vi/gG_dA32oH44/default.jpg"
-title:"Jay-Z & Kanye West - Ni**as In Paris (Explicit)" -->
-
 
 <style scoped>
 ul {

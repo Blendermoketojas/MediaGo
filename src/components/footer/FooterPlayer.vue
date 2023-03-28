@@ -20,7 +20,7 @@
     <div class="d-flex flex-column ms-5 mb-2" style="min-width: 600px">
       <div class="mb-3">
         <span
-          >{{ djName }} <span style="color: #828282">is playing</span>
+          >{{ djName || 'No DJ' }} <span style="color: #828282">is playing</span>
           {{ this.$store.getters.getVideoTitle }}
         </span>
       </div>
@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     toggleDialog() {
+      this.$store.commit("setDialogSelectedTab", this.$store.getters.getPlaylists[0].name);
       this.$store.commit("setCreationModalIs", "playlist");
       this.$store.commit("toggleShowPlaylistDialog");
     },
