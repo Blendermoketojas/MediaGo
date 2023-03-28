@@ -8,10 +8,10 @@
         </a>
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
             <li class="nav-item">
-                <a href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip"
+                <router-link :to="linkToServer" href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="" data-bs-toggle="tooltip"
                     data-bs-placement="right" data-bs-original-title="Home">
                     <font-awesome-icon icon="fa-solid fa-music" />
-                </a>
+                </router-link>
             </li>
             <li>
                 <button @click="toggleDialog" class="w-100 nav-link py-3 border-bottom text-white" title="" data-bs-toggle="tooltip"
@@ -20,16 +20,17 @@
                 </button>
             </li>
             <li>
-                <a href="#" class="nav-link py-3 border-bottom text-white" title="" data-bs-toggle="tooltip"
+                <router-link to="/settings" href="#" class="nav-link py-3 border-bottom text-white" title="" data-bs-toggle="tooltip"
                     data-bs-placement="right" data-bs-original-title="Orders">
                     <font-awesome-icon icon="fa-solid fa-gear" />
-                </a>
+                </router-link>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import {
     mdiPlaylistMusic
 } from '@mdi/js'
@@ -46,6 +47,12 @@ export default {
             this.$store.commit('setCreationModalIs', 'server');
             this.$store.commit('toggleShowServersDialog');
         },
+    },
+    computed: {
+        ...mapGetters(['getSelectedServer']),
+        linkToServer() {
+            return this.getSelectedServer ? `/floor/${this.getSelectedServer?.id}` : "/floor/waiting_room"
+        }
     }
 }
 </script>
