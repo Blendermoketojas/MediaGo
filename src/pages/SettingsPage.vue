@@ -1,6 +1,5 @@
 <script setup>
 import BaseHeader from "../components/header/BaseHeader.vue";
-import VueCarousel from 'vue-carousel';
 </script>
 
 <template>

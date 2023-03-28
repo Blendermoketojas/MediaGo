@@ -57,6 +57,7 @@ import DialogSidebar from "./playlist_dialog_components/DialogSidebar.vue";
 import NewPlaylist from "./NewPlaylist.vue";
 import BaseSong from "./playlist_dialog_components/BaseSong.vue";
 import { VueDraggableNext } from "vue-draggable-next";
+import eventBus from "../../EventBus";
 
 export default {
   components: {
@@ -99,6 +100,12 @@ export default {
       const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
       return totalSeconds;
     },
+    extractVideoId(youtubeUrl) {
+      const regex =
+        /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be|be\.com)\/(?:watch\?v=)?([A-Za-z0-9_\-]{11})/;
+      const match = youtubeUrl.match(regex);
+      return match ? match[1] : null;
+    },
     parseSongsToALine(array) {
       let result = "";
       for (let i = 0; i < array.length; i++) {
@@ -137,29 +144,52 @@ export default {
           );
       }
     },
+    initializeSelectedPlaylist() {
+      this.songs = this.$store.getters.getSelectedPlaylist.songs.map((s) => ({
+        id: s.id,
+        link: this.extractVideoId(s.link),
+      }));
+      this.initializePlaylist();
+    },
+    getPlaylistsAndSongs() {
+      this.$http({
+        method: "post",
+        url: `http://${this.$store.getters.getBackendIP}:5000/playlists_get`,
+        data: { id: this.$store.getters.getUser.id },
+      })
+        .then((response) => {
+          this.$store.commit("setPlaylists", response.data.playlists);
+          this.navItems = response.data.playlists;
+          this.$store.commit("setSelectedPlaylist", response.data.playlists[0]);
+        })
+        .then((response) => {
+          this.$http({
+            method: "post",
+            url: `http://${this.$store.getters.getBackendIP}:5000/songs_get`,
+            data: {
+              id: this.$store.getters.getSelectedPlaylist.id,
+              user_id: this.$store.getters.getUser.id,
+            },
+          }).then((songsResponse) => {
+            this.$store.commit("addSongs", {
+              playlistId: this.$store.getters.getSelectedPlaylist.id,
+              songs: songsResponse.data.songs,
+            });
+            if(songsResponse.data.songs?.length > 0) {
+              this.initializeSelectedPlaylist();
+            }
+          });
+        });
+    },
   },
   mounted() {
-    this.$http({
-      method: "post",
-      url: `http://${this.$store.getters.getBackendIP}:5000/playlists_get`,
-      data: { id: this.$store.getters.getUser.id },
-    })
-      .then((response) => {
-        this.$store.commit("setPlaylists", response.data.playlists);
-        this.navItems = response.data.playlists;
-        this.$store.commit("setSelectedPlaylist", response.data.playlists[0]);
-      })
-      .then((response) => {
-        this.$http({
-          method: "post",
-          url: `http://${this.$store.getters.getBackendIP}:5000/playlists_get`,
-          data: { id: this.$store.getters.getUser.id },
-        }).then((songsResponse) =>
-          // this.$store.commit("setPlaylists", response.data.playlists);
-          console.log(songsResponse.data)
-        );
-      });
-    this.initializePlaylist();
+    this.getPlaylistsAndSongs();
+    eventBus.on("prepare-playlist", (eventData) => {
+      this.initializeSelectedPlaylist();
+    });
+  },
+  unmounted() {
+    eventBus.off("prepare-playlist");
   },
 };
 </script>

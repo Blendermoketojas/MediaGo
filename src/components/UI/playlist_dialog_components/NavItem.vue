@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import eventBus from "../../../EventBus";
 export default {
   data() {
     return {};
@@ -35,12 +36,14 @@ export default {
                 id: findPlaylist.id,
                 user_id: this.$store.getters.getUser.id,
               },
-            }).then((response) => {
-              console.log(response.data);
+            }).then((songsResponse) => {
               this.$store.commit("addSongs", {
                 playlistId: findPlaylist.id,
-                songs: response.data.songs,
+                songs: songsResponse.data.songs,
               });
+              if (songsResponse.data.songs?.length > 0) {
+                eventBus.emit("prepare-playlist");
+              }
             });
           }
         }

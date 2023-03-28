@@ -32,7 +32,7 @@
         >
       </div>
     </div>
-    <span class="mt-5 ms-1">{{ videoDuration }}</span>
+    <span class="mt-5 ms-1">{{ videoDuration === 'NaN:NaN' ? '0:00' : videoDuration }}</span>
   </div>
 </template>
 <script>
