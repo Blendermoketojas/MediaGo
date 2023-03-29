@@ -12,7 +12,7 @@
     </div>
     <div class="section-margin">
       <button @click="toggleDialog" class="d-flex flex-column">
-        <span class="d-block">My first playlist</span>
+        <span class="d-block">{{ this.$store.getters.getSelectedPlaylist?.name }}</span>
         <span style="color: #828282">Add a song to play</span>
       </button>
     </div>
@@ -56,7 +56,8 @@ export default {
       const videoDuration = this.$store.getters.getVideoDuration;
       const seconds = videoDuration % 60;
       const minutes = Math.floor(videoDuration / 60);
-      return `${minutes}:${seconds}`;
+      const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+      return `${minutes}:${formattedSeconds}`;
     },
     videoProgress() {
       return (

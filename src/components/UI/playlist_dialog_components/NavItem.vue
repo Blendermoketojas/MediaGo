@@ -27,7 +27,6 @@ export default {
           (p) => this.name === p.name
         );
         if (findPlaylist) {
-          this.$store.commit("setSelectedPlaylist", findPlaylist);
           if (!findPlaylist.songs) {
             this.$http({
               method: "post",
@@ -41,10 +40,13 @@ export default {
                 playlistId: findPlaylist.id,
                 songs: songsResponse.data.songs,
               });
-              if (songsResponse.data.songs?.length > 0) {
-                eventBus.emit("prepare-playlist");
-              }
+              this.$store.commit("setSelectedPlaylist", findPlaylist);
+              console.log('prepare now')
+              eventBus.emit("prepare-playlist", findPlaylist.id);
             });
+          } else {
+            this.$store.commit("setSelectedPlaylist", findPlaylist);
+            eventBus.emit("prepare-playlist", findPlaylist.id);
           }
         }
       }

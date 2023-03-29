@@ -29,11 +29,7 @@
             >
               Close
             </v-btn>
-            <v-btn
-              color="blue-darken-1"
-              variant="text"
-              @click="addSong"
-            >
+            <v-btn color="blue-darken-1" variant="text" @click="addSong">
               Save
             </v-btn>
           </v-card-actions>
@@ -81,9 +77,14 @@ export default {
       this.$http({
         method: "post",
         url: `http://${this.$store.getters.getBackendIP}:5000/song_add`,
-        data: { ...this.form },
+        data: { id: this.$store.getters?.getSelectedPlaylist.id, ...this.form },
       })
-        .then((response) =>console.log(response.data))
+        .then((response) =>
+          this.$store.commit("addSong", {
+            playlistId: this.$store.getters?.getSelectedPlaylist.id,
+            song: response.data,
+          })
+        )
         .then((response) => (this.songDialog = false));
     },
   },
@@ -91,7 +92,6 @@ export default {
     return {
       songDialog: false,
       form: reactive({
-        id: this.$store.getters?.getSelectedPlaylist.id,
         user_id: this.$store.getters?.getUser?.id,
         link: "",
       }),

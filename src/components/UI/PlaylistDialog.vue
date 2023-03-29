@@ -31,12 +31,12 @@
             <VueDraggableNext
               :animation="300"
               tag="base-song"
-              :list="ytSongs"
+              :list="songsToRender"
               item-key="title"
               @end="handleChange"
             >
               <base-song
-                v-for="(song, index) in ytSongs"
+                v-for="(song, index) in songsToRender"
                 :key="index"
                 :id="'song-' + song.id"
                 :title="song.title"
@@ -44,6 +44,7 @@
                 :imgUrl="song.imgUrl"
                 :channelTitle="song.channelTitle"
               ></base-song>
+              <span class="display-6 ms-4 text-white" v-if="emptySongList">Playlist is empty.</span>
             </VueDraggableNext>
           </ul>
         </div>
@@ -70,20 +71,19 @@ export default {
   data() {
     return {
       navItems: [{ id: 1, name: "first playlist" }],
-      songs: [
-        { id: 1, link: "jNQXAC9IVRw" },
-        { id: 2, link: "YWyHZNBz6FE" },
-        { id: 3, link: "t0iZNTsu4Uo" },
-      ],
-      ytSongs: null,
+      songs: [],
+      ytSongs: [],
+      songsToRender: [],
+      reqMounted: false,
+      emptySongList: false,
     };
   },
   methods: {
     handleChange() {
       this.$store.commit("setFirstPlaylistSong", {
-        link: `https://www.youtube.com/watch?v=${this.ytSongs[0].link}`,
-        duration: this.durationToSeconds(this.ytSongs[0].duration),
-        title: this.ytSongs[0].title,
+        link: this.songsToRender[0].link,
+        duration: this.durationToSeconds(this.songsToRender[0].duration),
+        title: this.songsToRender[0].title,
       });
     },
     toggleDialog() {
@@ -116,41 +116,32 @@ export default {
       }
       return result;
     },
-    initializePlaylist() {
-      const songsArray = this.songs.map((song) => song.link);
+    initializePlaylist(playlist) {
+      const songsArray = playlist.map((song) => this.extractVideoId(song.link));
       const idsString = this.parseSongsToALine(songsArray);
       const link = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${this.$store.getters.getYT_API_KEY}&part=snippet,contentDetails&fields=items.snippet(title,thumbnails(default), channelTitle),items.contentDetails(duration)`;
-      if (!this.ytSongs) {
-        this.$http({
-          method: "get",
-          url: link,
-        })
-          .then(
-            (response) =>
-              (this.ytSongs = response.data.items.map((item, index) => ({
-                title: item.snippet.title,
-                link: this.songs[index].link,
-                duration: this.parseTime(item.contentDetails.duration),
-                imgUrl: item.snippet.thumbnails.default.url,
-                channelTitle: item.snippet.channelTitle,
-              })))
-          )
-          .then(() =>
-            this.$store.commit("setFirstPlaylistSong", {
-              link: `https://www.youtube.com/watch?v=${this.ytSongs[0].link}`,
-              duration: this.durationToSeconds(this.ytSongs[0].duration),
-              title: this.ytSongs[0].title,
-            })
-          );
-      }
+      this.$http({
+        method: "get",
+        url: link,
+      }).then((response) => {
+        const mappedSongs = response.data.items.map((item, index) => ({
+          title: item.snippet.title,
+          link: playlist[index].link,
+          duration: this.parseTime(item.contentDetails.duration),
+          imgUrl: item.snippet.thumbnails.default.url,
+          channelTitle: item.snippet.channelTitle,
+        }));
+        this.ytSongs.push(mappedSongs);
+        this.songsToRender = mappedSongs;
+      });
     },
-    initializeSelectedPlaylist() {
-      this.songs = this.$store.getters.getSelectedPlaylist.songs.map((s) => ({
-        id: s.id,
-        link: this.extractVideoId(s.link),
-      }));
-      this.initializePlaylist();
-    },
+    // initializeSelectedPlaylist() {
+    //   this.songs = this.$store.getters.getSelectedPlaylist.songs.map((s) => ({
+    //     id: s.id,
+    //     link: this.extractVideoId(s.link),
+    //   }));
+    //   this.initializePlaylist(this.songs);
+    // },
     getPlaylistsAndSongs() {
       this.$http({
         method: "post",
@@ -175,17 +166,42 @@ export default {
               playlistId: this.$store.getters.getSelectedPlaylist.id,
               songs: songsResponse.data.songs,
             });
-            if(songsResponse.data.songs?.length > 0) {
-              this.initializeSelectedPlaylist();
-            }
+            this.reqMounted = true;
+            console.log(songsResponse.data.songs);
+            this.initializePlaylist(songsResponse.data.songs);
+            console.log("mounted");
           });
         });
+    },
+  },
+  computed: {
+    selectedPlaylist() {
+      return this.$store.getters.getSelectedPlaylist;
+    },
+  },
+  watch: {
+    selectedPlaylist: {
+      handler(newVal, oldVal) {
+        console.log("changed")
+        if (this.reqMounted) {
+          const playlist = this.$store.getters.getPlaylists.find(
+            (p) => newVal.id === p.id
+          );
+          if(playlist.songs) {
+            this.initializePlaylist(playlist.songs);
+            this.emptySongList = false;
+          } else {
+            this.songsToRender = [];
+            this.emptySongList = true;
+          }
+        }
+      },
     },
   },
   mounted() {
     this.getPlaylistsAndSongs();
     eventBus.on("prepare-playlist", (eventData) => {
-      this.initializeSelectedPlaylist();
+      // this.initializeSelectedPlaylist();
     });
   },
   unmounted() {

@@ -126,6 +126,10 @@ const store = createStore({
       const index = state.playlists.findIndex(p => payload?.playlistId === p.id);
       state.playlists[index].songs = payload?.songs;
     },
+    addSong(state, payload) {
+      const index = state.playlists.findIndex(p => payload.playlistId === p.id );
+      state.playlists[index].push = payload.song;
+    },
     setDialogSelectedTab(state, payload) {
       state.dialogSelectedTab = payload;
     },
