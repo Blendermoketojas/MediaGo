@@ -1,14 +1,7 @@
 <template>
-  <div
-    class="d-flex w-100 footer-position bg-dark align-items-center text-white"
-    style="height: 83px"
-  >
+  <div class="d-flex w-100 footer-position bg-dark align-items-center text-white" style="height: 83px">
     <div>
-      <font-awesome-icon
-        class="me-5"
-        icon="fa-solid fa-compact-disc"
-        style="font-size: 50px; color: #828282"
-      />
+      <font-awesome-icon class="me-5" icon="fa-solid fa-compact-disc" style="font-size: 50px; color: #828282" />
     </div>
     <div class="section-margin">
       <button @click="toggleDialog" class="d-flex flex-column">
@@ -19,17 +12,13 @@
     <div class="vl"></div>
     <div class="d-flex flex-column ms-5 mb-2" style="min-width: 600px">
       <div class="mb-3">
-        <span
-          >{{ djName || 'No DJ' }} <span style="color: #828282">is playing</span>
+        <span>{{ djName || 'No DJ' }} <span style="color: #828282">is playing</span>
           {{ this.$store.getters.getVideoTitle }}
         </span>
       </div>
       <div>
         <v-progress-linear :color='getServer?.theme?.color' :model-value="videoProgress">
-          <v-tooltip activator="parent" location="start"
-            >Tooltip</v-tooltip
-          ></v-progress-linear
-        >
+          <v-tooltip activator="parent" location="start">Tooltip</v-tooltip></v-progress-linear>
       </div>
     </div>
     <span class="mt-5 ms-1">{{ videoDuration === 'NaN:NaN' ? '0:00' : videoDuration }}</span>
@@ -46,7 +35,9 @@ export default {
   },
   methods: {
     toggleDialog() {
-      this.$store.commit("setDialogSelectedTab", this.$store.getters.getPlaylists[0].name);
+      if (this.$store.getters.getPlaylists) {
+        this.$store.commit("setDialogSelectedTab", this.$store.getters.getPlaylists[0]?.name);
+      }
       this.$store.commit("setCreationModalIs", "playlist");
       this.$store.commit("toggleShowPlaylistDialog");
     },

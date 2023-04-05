@@ -1,19 +1,12 @@
 <template>
   <v-row justify="center">
-    <v-dialog
-      v-model="this.$store.getters.getShowPlaylistDialog"
-      fullscreen
-      :scrim="false"
-      transition="dialog-bottom-transition"
-    >
+    <v-dialog v-model="this.$store.getters.getShowPlaylistDialog" fullscreen :scrim="false"
+      transition="dialog-bottom-transition">
       <v-card color="#373b3e">
         <v-toolbar dark color="#212529" class="position-fixed">
-          <v-toolbar-title
-            ><span style="color: white">
+          <v-toolbar-title><span style="color: white">
               <font-awesome-icon icon="fa-solid fa-music" /> Playlist
-              editor</span
-            ></v-toolbar-title
-          >
+              editor</span></v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn variant="text" color="white" @click="toggleDialog">
@@ -22,28 +15,12 @@
           </v-toolbar-items>
         </v-toolbar>
         <div class="d-flex">
-          <dialog-sidebar
-            :items="navItems"
-            :additionVisible="true"
-          ></dialog-sidebar>
+          <dialog-sidebar :items="navItems" :additionVisible="true"></dialog-sidebar>
           <ul class="w-100">
             <new-playlist></new-playlist>
-            <VueDraggableNext
-              :animation="300"
-              tag="base-song"
-              :list="songsToRender"
-              item-key="title"
-              @end="handleChange"
-            >
-              <base-song
-                v-for="(song, index) in songsToRender"
-                :key="index"
-                :id="'song-' + song.id"
-                :title="song.title"
-                :duration="song.duration"
-                :imgUrl="song.imgUrl"
-                :channelTitle="song.channelTitle"
-              ></base-song>
+            <VueDraggableNext :animation="300" tag="base-song" :list="songsToRender" item-key="title" @end="handleChange">
+              <base-song v-for="(song, index) in songsToRender" :key="index" :id="'song-' + song.id" :title="song.title"
+                :duration="song.duration" :imgUrl="song.imgUrl" :channelTitle="song.channelTitle"></base-song>
               <span class="display-6 ms-4 text-white" v-if="emptySongList">Playlist is empty.</span>
             </VueDraggableNext>
           </ul>
@@ -187,7 +164,7 @@ export default {
           const playlist = this.$store.getters.getPlaylists.find(
             (p) => newVal.id === p.id
           );
-          if(playlist.songs) {
+          if (playlist.songs) {
             this.initializePlaylist(playlist.songs);
             this.emptySongList = false;
           } else {
@@ -196,6 +173,7 @@ export default {
           }
         }
       },
+      immediate: false
     },
   },
   mounted() {

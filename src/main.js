@@ -77,7 +77,7 @@ const store = createStore({
       user: {},
       selectedServer: null,
       ws: null,
-      frontendIP: "localhost",
+      frontendIP: "192.168.239.22",
       backendIP: "78.60.244.35",
       YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
       isAuthenticated: false,
@@ -340,7 +340,7 @@ function getDefaultState() {
     user: { id: "86465161", name: `lopasprisijunk`, permissions: 1 },
     selectedServer: null,
     ws: null,
-    frontendIP: "localhost",
+    frontendIP: "192.168.239.22",
     backendIP: "78.60.244.35", // TODO: DON'T PUSH TO GIT OR JEVGENIJ KILLS U
     YT_API_KEY: "AIzaSyDoLvnqJcmujaWDPwMXtR4j3iuqRBEOBPI",
     isAuthenticated: false,

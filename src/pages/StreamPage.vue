@@ -266,7 +266,7 @@ export default {
     // init(roomInfo);
   },
   unmounted() {
-    this.ws.send(JSON.stringify({ type: "close" }));
+    // this.ws.send(JSON.stringify({ type: "close" }));
   },
 };
 </script>

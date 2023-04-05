@@ -3,86 +3,47 @@
     <v-dialog v-model="isShown" z-index="1000" persistent :width="sizing.width">
       <v-card>
         <v-card-title>
-          <span v-if="this.$store.getters.getIsEditingMode" class="text-h5"
-            >Edit {{ creationMode }}</span
-          >
-          <span v-else-if="creationMode === 'server'" class="text-h5"
-            >Create your server to begin the fun!</span
-          >
-          <span v-else-if="creationMode === 'playlist'" class="text-h5"
-            >Create a playlist</span
-          >
+          <span v-if="this.$store.getters.getIsEditingMode" class="text-h5">Edit {{ creationMode }}</span>
+          <span v-else-if="creationMode === 'server'" class="text-h5">Create your server to begin the fun!</span>
+          <span v-else-if="creationMode === 'playlist'" class="text-h5">Create a playlist</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row v-if="creationMode === 'server'">
               <v-col cols="12" sm="6" md="6">
-                <v-text-field
-                  v-model="formServer.name"
-                  label="Server name*"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="formServer.name" label="Server name*" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-autocomplete
-                  v-model="formServer.genre"
-                  item-title="name"
-                  item-value="id"
-                  :items="
-                    this.$store.getters?.getAllGenres || [
-                      { id: 0, name: 'fetching...' },
-                    ]
-                  "
-                  label="Genre*"
-                ></v-autocomplete>
+                <v-autocomplete v-model="formServer.genre" item-title="name" item-value="id" :items="
+                  this.$store.getters?.getAllGenres || [
+                    { id: 0, name: 'fetching...' },
+                  ]
+                " label="Genre*"></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model="formServer.country"
-                  item-title="name"
-                  item-value="id"
-                  :items="
-                    this.$store.getters?.getAllCountries || [
-                      { id: 0, name: 'fetching...' },
-                    ]
-                  "
-                  label="Country*"
-                ></v-autocomplete>
+                <v-autocomplete v-model="formServer.country" item-title="name" item-value="id" :items="
+                  this.$store.getters?.getAllCountries || [
+                    { id: 0, name: 'fetching...' },
+                  ]
+                " label="Country*"></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model="formServer.theme"
-                  item-title="name"
-                  item-value="id"
-                  :items="
-                    this.$store.getters?.getAllThemes || [
-                      { id: 0, name: 'fetching...' },
-                    ]
-                  "
-                  label="Themes*"
-                ></v-autocomplete>
+                <v-autocomplete v-model="formServer.theme" item-title="name" item-value="id" :items="
+                  this.$store.getters?.getAllThemes || [
+                    { id: 0, name: 'fetching...' },
+                  ]
+                " label="Themes*"></v-autocomplete>
               </v-col>
               <v-col cols="12" sm="12">
-                <v-textarea
-                  v-model="formServer.description"
-                  label="Description"
-                ></v-textarea>
+                <v-textarea v-model="formServer.description" label="Description"></v-textarea>
               </v-col>
             </v-row>
             <v-row v-else>
               <v-col cols="12" sm="12" md="12">
-                <v-text-field
-                  v-model="formPlaylist.name"
-                  label="Playlist name*"
-                  required
-                ></v-text-field>
+                <v-text-field v-model="formPlaylist.name" label="Playlist name*" required></v-text-field>
               </v-col>
               <v-col cols="12" sm="12" md="12">
-                <v-textarea
-                  v-model="formPlaylist.description"
-                  label="Playlist description*"
-                  required
-                ></v-textarea>
+                <v-textarea v-model="formPlaylist.description" label="Playlist description*" required></v-textarea>
               </v-col>
             </v-row>
           </v-container>
@@ -165,10 +126,11 @@ export default {
     handleCreation() {
       if (this.$store.getters.getCreationModalIs === "server") {
         console.log(this.formServer);
-        this.$http({
-          method: "post",
-          url: `http://${this.$store.getters.getBackendIP}:5000/${this.serverActions}`,
-          data: {
+        let data;
+        if (this.serverActions === "server_add") {
+          data = { ...this.formServer }
+        } else {
+          data = {
             country: this.formServer?.country,
             description: this.formServer?.description,
             genre: this.formServer?.genre,
@@ -176,9 +138,15 @@ export default {
             name: this.formServer?.name,
             theme: this.formServer?.theme.id,
             owner: this.formServer?.owner,
-          },
-        })
-          .then((response) => {this.$store.commit("addServer", response.data); console.log(response.data)})
+          }
+        }
+        this.$http({
+          method: "post",
+          url: `http://${this.$store.getters.getBackendIP}:5000/${this.serverActions}`,
+          data: { ...data }
+        }
+        )
+          .then((response) => { this.$store.commit("addServer", response.data); console.log(response.data) })
           .then((response) => (this.isShown = false));
       } else {
         this.$http({
